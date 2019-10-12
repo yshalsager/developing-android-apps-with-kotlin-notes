@@ -53,7 +53,7 @@ This intent-filter tells the OS where to start the app when the user clicks on t
 
 - The activity and the layout are connected by a process known as layout inflation this process is triggered when the activity starts.
 
-##### [setContentView](https://developer.android.com/reference/kotlin/android/app/Activity.html)
+#### [setContentView](https://developer.android.com/reference/kotlin/android/app/Activity.html)
 
 Set the activity content from a layout resource. The resource will be inflated, adding all top-level views to the activity.
 
@@ -61,7 +61,7 @@ Set the activity content from a layout resource. The resource will be inflated, 
 setContentView(R.layout.activity_main)
 ```
 
-##### [Linear Layout](https://developer.android.com/reference/kotlin/android/widget/LinearLayout)
+#### [Linear Layout](https://developer.android.com/reference/kotlin/android/widget/LinearLayout)
 
 `LinearLayout` is a view group that aligns all children in a single direction, vertically or horizontally. You can specify the layout direction with the `android:orientation` attribute.
 
@@ -206,7 +206,7 @@ It controls:
 
 - Automated Tests
 
-##### build.gradle
+#### build.gradle
 
 - Plugins repositories:
   

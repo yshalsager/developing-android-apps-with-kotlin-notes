@@ -73,7 +73,7 @@ A user interface element that displays text to the user.
 
 - `android:drawableTop`: Puts an Image before text, instead of having a separate ImageView for it.
 
-##### **Controling the visibility of TextView**:
+#### Controling the visibility of TextView:
 
 `android:visibility`: Controls the initial visibility of the view. Method [setVisibility(int)](https://developer.android.com/reference/kotlin/android/view/View.html#setVisibility(kotlin.Int)) can be also used. 
 
@@ -360,7 +360,7 @@ A ConstraintLayout is a ViewGroup that allows you to position and size widgets i
 
 All the power of `ConstraintLayout` is available directly from the Layout Editor's visual tools because the layout API and the Layout Editor were specially built for each other. So you can build your layout with `ConstraintLayout` entirely by drag-and-dropping instead of editing the XML.
 
-##### Advantages of Constraint Layout:
+#### Advantages of Constraint Layout:
 
 - You can make it responsive to screens and resolutions
 
@@ -370,7 +370,7 @@ All the power of `ConstraintLayout` is available directly from the Layout Editor
 
 - Free-form place views anywhere and the editor helps add constraints
 
-##### Constraint
+#### Constraint
 
 A connection or an alignment to another UI element, or to the parent layout, or to an invisible guideline.
 
@@ -380,13 +380,13 @@ When creating constraints, remember the following rules:
 - You can create constraints only between a constraint handle and an anchor point that share the same plane. So a vertical plane (the left and right sides) of a view can be constrained only to another vertical plane, and baselines can constrain only to other baselines.
 - Each constraint handle can be used for just one constraint, but you can create multiple constraints (from different views) to the same anchor point.
 
-##### Types of constraints
+#### Types of constraints
 
-1. **Fixed constraints*: specified using a hard-coded number, represented by straight lines, and used commonly in margins.
+1. **Fixed constraints**: specified using a hard-coded number, represented by straight lines, and used commonly in margins.
 
 2. **Adaptable constraint**: A constraint that defines a relationship in relative and weighted terms.
 
-##### Positioning types
+#### Positioning types
 
 - Absolute positioning: Positioning is numerical, such as the position in x, y coordinates.
 
