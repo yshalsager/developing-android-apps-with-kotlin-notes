@@ -74,9 +74,9 @@ setContentView(R.layout.activity_main)
 </LinearLayout>
 ```
 
-- ```xml
-  android:layout_gravity
-  ```
+```xml
+android:layout_gravity
+```
 
 [Gravity](https://developer.android.com/reference/kotlin/android/widget/LinearLayout.LayoutParams.html) specifies how a component should be placed in its group of cells.
 
