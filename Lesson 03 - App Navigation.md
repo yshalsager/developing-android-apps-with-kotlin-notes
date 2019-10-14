@@ -22,8 +22,7 @@
 
 ### Fragments
 
-- Android introduced fragments in android 3.0 (API level 11) primarily to support
-   more dynamic and flexible UI designs on large screens such as tablets.
+- Android introduced fragments in android 3.0 (API level 11) primarily to support more dynamic and flexible UI designs on large screens such as tablets.
 
 - The activity operates as a frame that contains the UI fragments and can provide UI elements that surround the fragment.
 
@@ -85,11 +84,7 @@ The navigation component simplifies many navigation tasks more importantly it do
 
 - The first principle is that apps have a **fixed starting destination** which is the screen the user sees when they launch your app from the launcher. Apps that require login can have one of exceptions to this rule. This destination should also be the last screen the user sees when they return to the launcher after pressing the back button. **(There's always a starting place)**
 
-- The second principle of navigation is the navigation state of your app should be represented with a last in first, out structure. It's that back stack we talked about
-   before. This navigation stack has the start destination at the bottom of the
-   stack and the current destination at the top of the stack. Operations that change
-   the navigation stack should always operate on the top of the navigation
-   stack either by pushing a new destination on to the top of the stack or popping the top most destination off the stack. **(You can always go back)**
+- The second principle of navigation is the navigation state of your app should be represented with a last in first, out structure. It's that back stack we talked about before. This navigation stack has the start destination at the bottom of the stack and the current destination at the top of the stack. Operations that change the navigation stack should always operate on the top of the navigation stack either by pushing a new destination on to the top of the stack or popping the top most destination off the stack. **(You can always go back)**
 
 - The third principle of navigation involves the way the user gets back to a previous destination. The UP button in the action bar and the system back button both work the same way when navigating within your apps task. The back button will also navigate out of your app and to other apps typically the launcher. correspondingly if the users at the start destination the UP button should not be shown. **(Up goes back, mostly)**
 
@@ -168,10 +163,7 @@ It's important to have principles such as these implemented across a wide range 
 
 7. Connecting Fragments with an Action:
    
-   Begin by hovering over the `titleFragment`. You’ll see a circular 
-   connection point on the right side of the fragment view. Click on the 
-   connection point and drag it to `gameFragment` to add an Action that 
-   connects the two fragments.
+   Begin by hovering over the `titleFragment`. You’ll see a circular connection point on the right side of the fragment view. Click on the connection point and drag it to `gameFragment` to add an Action that connects the two fragments.
 
 8. Navigating when the Play Button is Hit:
    
@@ -205,11 +197,7 @@ It's important to have principles such as these implemented across a wide range 
 
 - **PopTo Not-Inclusive**: Pops off everything on the back stack until it finds the referenced fragment transaction.
 
-From the navigation editor, select the action for navigating from 
-the `GameFragment` to the `GameOverFragment`. Select `PopTo` GameFragment in 
-the attributes pane with the `inclusive` flag to tell the Navigation 
-component to pop fragments off of the fragment back stack until it finds
- the `GameFragment`, and then pop off the `gameFragment` transaction.
+From the navigation editor, select the action for navigating from the `GameFragment` to the `GameOverFragment`. Select `PopTo` `GameFragment` in the attributes pane with the `inclusive` flag to tell the Navigation component to pop fragments off of the fragment back stack until it finds the `GameFragment`, and then pop off the `gameFragment` transaction.
 
 ### Adding Support for the Up Button
 
@@ -436,11 +424,7 @@ An Intent is an "intention" to perform an action; a messaging object you can use
 
 7. Hide the sharing menu item if the sharing intent doesn’t resolve to an Activity.
    
-   Get the shareIntent using `getShareIntent()` and call `resolveActivity` 
-   using the `packageManger` to make sure our shareIntent resolves to an 
-   activity. If the result equals null, which means that it doesn’t resolve, we 
-   find our sharing menu item from the inflated menu and set its visibility
-    to false.
+   Get the shareIntent using `getShareIntent()` and call `resolveActivity` using the `packageManger` to make sure our shareIntent resolves to an activity. If the result equals null, which means that it doesn’t resolve, we find our sharing menu item from the inflated menu and set its visibility to false.
    
    ```kotlin
    // Showing the Share Menu Item Dynamically
@@ -453,6 +437,17 @@ An Intent is an "intention" to perform an action; a messaging object you can use
           menu?.findItem(R.id.share)?.setVisible(false)
       }
    }
+   ```
+   
+   <u>**Alternative:**</u> You can just catch the exception and show a toast.
+   
+   ```kotlin
+           try {
+               startActivity(shareIntent)
+           } catch (ex: ActivityNotFoundException) {
+               Toast.makeText(this, getString(R.string.sharing_not_available),
+                       Toast.LENGTH_LONG).show()
+           }
    ```
 
 ### Adding the Navigation Drawer
@@ -580,14 +575,10 @@ navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestin
 
 ### Animation with Navigation
 
-- One more cool thing that we can do with navigation is to apply animated
-  transitions. A restrained and artful use of these transitions can not only make
-  application stand out from the crowbut can help the user understand the
+- One more cool thing that we can do with navigation is to apply animated transitions. A restrained and artful use of these transitions can not only make application stand out from the crowbut can help the user understand the
   flow of the application.
 
-- These transitions are controlled by XML animation resources. There are several different kinds of animations in Android but for now we're going to focus
-  on view animations which describe a transformation of a single view or view
-  group such as the view group contained by our fragment.
+- These transitions are controlled by XML animation resources. There are several different kinds of animations in Android but for now we're going to focus on view animations which describe a transformation of a single view or view  group such as the view group contained by our fragment.
 
 - We're going to cover alpha animations and translation animations in this lesson, but the framework also includes rotation and scale animations. The framework includes predefined animation resources and the navigation component also includes some default animations, but it's fun to create our own.
 
