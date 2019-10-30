@@ -1,8 +1,6 @@
 ## Lesson 03: App Navigation
 
-> Building multiple screens on Android has never been easier with the 
-> Navigation library. You'll get to build a fun trivia app using multiple 
-> fragments and conditional navigation.
+> Building multiple screens on Android has never been easier with the Navigation library. You'll get to build a fun [trivia app](https://github.com/udacity/andfun-kotlin-android-trivia) using multiple fragments and conditional navigation.
 
 ### Navigation Terms
 

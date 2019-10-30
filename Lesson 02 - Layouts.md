@@ -1,9 +1,7 @@
 ## Lesson 02: Layouts
 
 > Designing your app's UI is the first step to a great user experience.
-> 
-> This lesson covers all the basics of UI layout design. You'll use all
-> the popular view types with a focus on the ContraintLayout.
+> This lesson covers all the basics of UI layout design. You'll use all the popular view types with a focus on the ContraintLayout to make two apps, "[About Me](https://github.com/udacity/andfun-kotlin-about-me)" and "[Color my Views](https://github.com/udacity/andfun-kotlin-color-my-views)".
 
 ### View Groups & View Hierarchy
 

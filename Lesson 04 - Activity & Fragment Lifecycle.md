@@ -1,8 +1,6 @@
 ## Lesson 04: Activity & Fragment Lifecycle
 
-> Understanding the concept of Lifecycles for both activities and 
-> fragments is what makes a great Android developer! Have a treat with 
-> this delicious "Dessert Pusher" app.
+> Understanding the concept of Lifecycles for both activities and fragments is what makes a great Android developer! Have a treat with this delicious "[Dessert Pusher](https://github.com/udacity/andfun-kotlin-dessert-pusher)" app.
 
 - Every activity and every fragment have what's known as a life cycle.
 

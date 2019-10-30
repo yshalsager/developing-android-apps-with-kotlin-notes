@@ -2,7 +2,7 @@
 
 ## Lesson 01: Build your First App
 
-> Build your first app: "Dice Roller" that covers basic Android components like displaying texts and images as well as a tour of the Android tools you'll be using throughout this course.
+> Build your first app: "[Dice Roller](https://github.com/udacity/andfun-kotlin-dice-roller)" that covers basic Android components like displaying texts and images as well as a tour of the Android tools you'll be using throughout this course.
 
 ##### Android project contains:
 
