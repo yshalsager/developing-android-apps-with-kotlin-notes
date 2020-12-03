@@ -92,18 +92,18 @@ nicknameTextView.visibility = View.VISIBLE
 
 - Store the text size, padding, and margin values in `dimens.xml` file for better and cleaner structure, instead of repeating.
   
-  ```xml
+```xml
   <resources>
       <dimen name="text_size">20sp</dimen>
       <dimen name="small_padding">8dp</dimen>
       <dimen name="layout_margin">16dp</dimen>
       <dimen name="padding">16dp</dimen>
   </resources>
-  ```
+```
 
 - Store text styling attributes in `styles.xml` to make the elements of a layout look consistent across the app. Then you can use it for a TextView `style="@style/NameStyle"`
   
-  ```xml
+```xml
       <style name="NameStyle">
           <item name="android:layout_marginTop">@dimen/layout_margin</item>
           <item name="android:fontFamily">@font/roboto</item>
@@ -111,25 +111,25 @@ nicknameTextView.visibility = View.VISIBLE
           <item name="android:textColor">@android:color/black</item>
           <item name="android:textSize">@dimen/text_size</item>
       </style>    
-  ```
+```
 
 #### Padding and Margin
 
 - Padding is a space added inside/within components like `TextView` , `Button`, `EditText`, etc. Eg. space between the Text and Border.
   
-  ```xml
+```xml
   android:padding="10dp"
   android:paddingTop="@dimen/small_padding
   android:paddingRight="40dp"
-  ```
+```
 
 - [Margin](https://developer.android.com/reference/android/view/ViewGroup.MarginLayoutParams) is the space added outside the boundaries of an element. Eg. space between the left edge of the screen and the border of your component.
   
-  ```xml
+```xml
   android:layout_margin="10dp"
   android:layout_marginTop
   android:layout_marginStart
-  ```
+```
 
 *Note:* **ImageView contentDescription warning**:
 
@@ -211,14 +211,18 @@ imm.hideSoftInputFromWindow(view.windowToken, 0)
 
 - The compiler generates a helper class called a binding class when the activity is created so is an instance of that binding class and then we can access the view through this generated binding class without any extra overhead.
 
-#### Enabling Data Binding
+#### Enabling [Data Binding](https://developer.android.com/topic/libraries/data-binding/start)
 
 1. In `app/build.gradle` add the following to android block and sync the project:
 
 ```groovy
-    dataBinding {
-        enabled = true
-    }
+buildFeatures {
+    dataBinding true
+}
+
+// dataBinding {
+//        enabled = true
+//    }
 ```
 
 2. Wrap XML layout into `<layout></layout>` tag and move namespaces to it.
@@ -238,17 +242,17 @@ imm.hideSoftInputFromWindow(view.windowToken, 0)
    
    - Create a Binding object (Name of the object is derived from the name of the activity or fragment).
      
-     ```kotlin
-     import com.example.android.aboutme.databinding.ActivityMainBinding
-     private lateinit var binding: ActivityMainBinding
-     ```
+```kotlin
+    import com.example.android.aboutme.databinding.ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
+```
    
    - Setting the content view using DataBindingUtil creates an instance of ActivityMainBinding from the supplied activity and the supplied layout. This object contains mappings between the activity and layout, and functionality to interact with them.
      
-     ```kotlin
+```kotlin
      import androidx.databinding.DataBindingUtil
      binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-     ```
+```
 
 #### Accessing Elements using Data Binding
 
@@ -287,13 +291,13 @@ This makes data available to the view directly.
 
 - Define a new data class:
   
-  ```kotlin
+```kotlin
   data class MyName(var name: String = "", var nickname: String = "")
-  ```
+```
 
 - In XML layout, create a data block inside `<layout>` at the top, and declare variables with `name` as the same as data class and a `type` which is the full name of data class, inside of that block.
   
-  ```xml
+```xml
       <!-- Use a data block to declare variables. -->
       <data>
           <!-- Declare a variable by specifying a name and a data type. -->
@@ -302,11 +306,11 @@ This makes data available to the view directly.
               name="myName"
               type="com.example.android.aboutme.MyName" />
       </data>
-  ```
+```
 
 - Now you can reference the new variables from XML directly after creating them.
   
-  ```xml
+```xml
           <TextView
               android:id="@+id/name_text"
               style="@style/NameStyle"
@@ -315,25 +319,25 @@ This makes data available to the view directly.
               android:text="@={myName.name}"
               android:textAlignment="center" />
           <!--android:text="@string/yshalsager"-->
-  ```
+```
 
 - In MainActivity create an instance of data class and set the name
   
-  ```kotlin
+```kotlin
       // Instance of MyName data class.
       private val myName: MyName = MyName("yshalsager")
-  ```
+```
 
 - Then, in onCreate set the value of myName variable that is declared and used in the layout file.
   
-  ```kotlin
+```kotlin
           // Set the value of the myName variable that is declared and used in the layout file.
           binding.myName = myName
-  ```
+```
 
 - And finally set the nickname like we just did in XML and MainActivity.
   
-  ```xml
+```xml
           <TextView
               android:id="@+id/nickname_text"
               style="@style/NameStyle"
@@ -342,13 +346,27 @@ This makes data available to the view directly.
               android:text="@={myName.nickname}"
               android:textAlignment="center"
               android:visibility="gone" />
-  ```
+```
   
-  ```kotlin
+```kotlin
           binding.apply {
               // Set the text for nicknameText to the value in nicknameEdit.
               myName?.nickname = nicknameEdit.text.toString()
-  ```
+```
+
+##### Extra: Localizing bounded-data
+- You can do this:
+`android:text= "@{String.format(@string/Generic_Text, Profile.name)}"`. If you use string formatting for your `Generic_Text` string. ex. `%s` at the end
+
+- Or even simpler:
+`android:text= "@{@string/generic_text(profile.name)}"`so, you string should be like this: `<string name="generic_text">My Name is %s</string>`.
+- you can use as many variables as you need:
+```xml
+android:text= "@{@string/generic_text(profile.firstName, profile.secondName)}"
+```
+Which equals: `<string name="generic_text">My Name is %1$s %2$s</string>`.
+
+[Source](https://stackoverflow.com/a/38984088) - [Read more](https://developer.android.com/topic/libraries/data-binding/expressions#resources)
 
 ---
 
@@ -414,25 +432,25 @@ Ratio constraints are useful when:
 
 - Color class colors
   
-  ```kotlin
+```kotlin
   view.setBackgroundColor(Color.GRAY)
-  ```
+```
 
 - Android color resources
   
-  ```kotlin
+```kotlin
   view.setBackgroundResource(android.R.color.holo_green_light)
-  ```
+```
 
 - Custom defined colors in colors.xml
   
-  ```xml
+```xml
   <color name="my_green">#12C700</color>
-  ```
+```
   
-  ```kotlin
+```kotlin
   box_three_text.setBackgroundResource(R.color.my_red)
-  ```
+```
 
 #### Baseline Constraint
 

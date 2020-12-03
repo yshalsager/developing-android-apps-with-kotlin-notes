@@ -53,28 +53,28 @@ For this class we're focusing on the single activity multiple fragment model whi
 
 ### Creating And Adding A Fragment
 
-1. Select File->New->Fragment->Fragment (Blank). Uncheck `include fragment factory methods`, and `include interface callbacks`.
+1. Select File->New->Fragment->Fragment (Blank). __Uncheck__ `include fragment factory methods`, and `include interface callbacks`.
 
 2. As we used `DataBindingUtil.setContentView` in our Activity to get the binding class from a layout, in a fragment we need to call `DataBindingUtil.inflate` in `onCreateView` with the provided layout inflater, the layout resource ID, the provided viewgroup it will be hosted by, and false to not attach it to the viewgroup. Return `binding.root`.
    
-   ```kotlin
-   //Inflating and Returning the View with DataBindingUtil
-   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-      val binding = DataBindingUtil.inflate<FragmentTitleBinding>(inflater, R.layout.fragment_title, container, false)
-      return binding.root
-   }
-   ```
+```kotlin
+//Inflating and Returning the View with DataBindingUtil
+override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                        savedInstanceState: Bundle?): View? {
+  val binding = DataBindingUtil.inflate<FragmentTitleBinding>(inflater, R.layout.fragment_title, container, false)
+  return binding.root
+}
+```
 
 3. Add the fragment to the activity layout.
    
-   ```xml
-               <fragment
-                   android:id="@+id/titleFragment"
-                   android:name="com.example.android.navigation.TitleFragment"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent" />
-   ```
+```xml
+<fragment
+   android:id="@+id/titleFragment"
+   android:name="com.example.android.navigation.TitleFragment"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent" />
+```
 
 ### Principles of Navigation
 
@@ -94,14 +94,14 @@ It's important to have principles such as these implemented across a wide range 
    
    In `app/build.gradle` file, add the dependencies for navigation fragment ktx and [navigation UI](https://developer.android.com/topic/libraries/architecture/navigation/navigation-ui) ktx. You can see which version is the latest on [this page on developer.android.com](https://developer.android.com/topic/libraries/architecture/adding-components)
    
-   ```groovy
-   dependencies {
-       ...
-       // Navigation
-       implementation "android.arch.navigation:navigation-fragment-ktx:$version_navigation"     
-       implementation "android.arch.navigation:navigation-ui-ktx:$version_navigation"
-   }
-   ```
+```groovy
+dependencies {
+   ...
+   // Navigation
+   implementation "android.arch.navigation:navigation-fragment-ktx:$version_navigation"
+   implementation "android.arch.navigation:navigation-ui-ktx:$version_navigation"
+}
+```
 
 2. Adding the Navigation Graph to the Project:
    
@@ -111,53 +111,54 @@ It's important to have principles such as these implemented across a wide range 
 
 3. Replace the Title Fragment with the Navigation Host Fragment in the Activity Layout:
    
-   ```xml
-        <fragment
-            android:id="@+id/myNavHostFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-   ```
+```xml
+<fragment
+    android:id="@+id/myNavHostFragment"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+```
 
 4. Add `app:navGraph` pointing to the `@navigation/navigation` resource.
    
-   ```xml
-   app:navGraph="@navigation/navigation"
-   ```
+```xml
+app:navGraph="@navigation/navigation"
+```
 
 5. Set `defaultNavHost` to ture.
    
-   ```xml
-   app:defaultNavHost="true"
-   ```
+```xml
+app:defaultNavHost="true"
+```
 
 6. Adding Fragments to the Navigation Graph:
    
    Within the navigation editor, click the add button. A list of fragments and activities will drop down. Add `fragment_title` first, as it is the start destination. (you’ll see that it will automatically be set as the Start Destination for the graph.) Next, add the `fragment_game`.
    
-   ```xml
-   <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-       xmlns:tools="http://schemas.android.com/tools"
-       android:id="@+id/nav_root"
-       app:startDestination="@+id/titleFragment">
-       <fragment
-           android:id="@+id/titleFragment"
-           android:name="com.example.android.navigation.TitleFragment"
-           android:label="@string/android_trivia"
-           tools:layout="@layout/fragment_title">
-           <action
-               android:id="@+id/action_titleFragment_to_gameFragment"
-               app:destination="@id/gameFragment" />
-       </fragment>
-       <fragment
-           android:id="@+id/gameFragment"
-           android:name="com.example.android.navigation.GameFragment"
-           android:label="@string/android_trivia"
-           tools:layout="@layout/fragment_game">
-       </fragment>
-   </navigation>
-   ```
+```xml
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:id="@+id/nav_root"
+   app:startDestination="@+id/titleFragment">
+   <fragment
+       android:id="@+id/titleFragment"
+       android:name="com.example.android.navigation.TitleFragment"
+       android:label="@string/android_trivia"
+       tools:layout="@layout/fragment_title">
+       <action
+           android:id="@+id/action_titleFragment_to_gameFragment"
+           app:destination="@id/gameFragment" />
+   </fragment>
+   <fragment
+       android:id="@+id/gameFragment"
+       android:name="com.example.android.navigation.GameFragment"
+       android:label="@string/android_trivia"
+       tools:layout="@layout/fragment_game">
+   </fragment>
+</navigation>
+```
+_Note:_ `android:label` attribute is used for fragment title in action bar, while `tools:layout` is used for showing the fragment preview in navigation designer.
 
 7. Connecting Fragments with an Action:
    
@@ -167,27 +168,27 @@ It's important to have principles such as these implemented across a wide range 
    
    Return to `onCreateView` in the `TitleFragment` Kotlin code. The binding class has been exposed, so you just call `binding.playButton.setOnClickListener` with a new anonymous function, otherwise known as a lambda. Inside our lambda, use `view.findNavcontroller` to get the navigation controller for our Navigation Host Fragment. Then, use the `navController` to navigate using the `titleFragment` to `gameFragment` action, by calling `navigate(R.id.action_titleFragment_to_gameFragment)`.
    
-   ```kotlin
-           binding.playButton.setOnClickListener {view: View ->
-               Navigation.findNavController(view).navigate(R.id.action_titleFragment_to_gameFragment)
-           }
-   ```
+```kotlin
+binding.playButton.setOnClickListener {view: View ->
+   Navigation.findNavController(view).navigate(R.id.action_titleFragment_to_gameFragment)
+}
+```
    
    Or
    
-   ```kotlin
-   //The complete onClickListener with Navigation
-   binding.playButton.setOnClickListener { view: View ->
-           view.findNavController().navigate(R.id.action_titleFragment_to_gameFragment)
-   }
-   ```
+```kotlin
+//The complete onClickListener with Navigation
+binding.playButton.setOnClickListener { view: View ->
+       view.findNavController().navigate(R.id.action_titleFragment_to_gameFragment)
+}
+```
    
    Or, use `Navigation` to create the `onClick` listener
    
-   ```kotlin
-   binding.playButton.setOnClickListener(
-           Navigation.createNavigateOnClickListener(R.id.action_titleFragment_to_gameFragment))
-   ```
+```kotlin
+binding.playButton.setOnClickListener(
+       Navigation.createNavigateOnClickListener(R.id.action_titleFragment_to_gameFragment))
+```
 
 ### Back Stack Manipulation
 
@@ -246,33 +247,35 @@ override fun onSupportNavigateUp(): Boolean {
 
 3. Call `setHasOptionsMenu()` in `onCreateView` of `TitleFragment`:
    
-   ```kotlin
-   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-      ...
-      setHasOptionsMenu(true)
-      return binding.root
-   }
-   ```
+```kotlin
+override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                        savedInstanceState: Bundle?): View? {
+    ...
+    setHasOptionsMenu(true)
+    return binding.root
+}
+```
 
 4. Override `onCreateOptionsMenu` and inflate menu resource:
    
-   ```kotlin
-   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-      super.onCreateOptionsMenu(menu, inflater)
-      inflater?.inflate(R.menu.overflow_menu, menu)
-   }
-   ```
+```kotlin
+override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    super.onCreateOptionsMenu(menu, inflater)
+    inflater.inflate(R.menu.overflow_menu, menu)
+}
+```
 
 5. Override `onOptionsItemSelected` and call `NavigationUI.onNavDestinationSelected`:
    
-   ```kotlin
-   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-      return NavigationUI.onNavDestinationSelected(item!!,
-              view!!.findNavController())
-              || super.onOptionsItemSelected(item)
-   }
-   ```
+```kotlin
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return NavigationUI.onNavDestinationSelected(
+        item, view!!.findNavController()
+    )
+            || super.onOptionsItemSelected(item)
+}
+```
+_Note:_ `|| super.onOptionsItemSelected(item)` statement allows the app to handle regular menu actions that doesn't involve navigation.
 
 ### Safe Arguments
 
@@ -288,25 +291,25 @@ Safeargs is a Gradle plugin which generates simple object and builder classes fo
 
 1. In project `build.gradle` add the classpath for the navigation-safe-args-gradle-plugin.
    
-   ```kotlin
-   classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:$version_navigation"
-   ```
+```kotlin
+classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$version_navigation"
+```
 
 2. In `app/build.gradle` at the top and after all of the other plugins, add the apply plugin statement with the androidx navigation safeargs plugin.
    
-   ```kotlin
-   // Adding the apply plugin statement for safeargs
-   apply plugin: 'kotlin-kapt'
-   apply plugin: 'androidx.navigation.safeargs'
-   ```
+```kotlin
+// Adding the apply plugin statement for safeargs
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
+```
 
 3. Switch the Fragment to use generated `NavDirections` when navigating to the other fragments.
    
-   ```kotlin
-   // Using directions to navigate to the GameWonFragment
-   // view.findNavController().navigate(R.id.action_gameFragment_to_gameWonFragment)
+```kotlin
+// Using directions to navigate to the GameWonFragment
+// view.findNavController().navigate(R.id.action_gameFragment_to_gameWonFragment)
    view.findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameWonFragment())
-   ```
+```
 
 4. Add the Arguments using the navigation editor.
    
@@ -314,22 +317,22 @@ Safeargs is a Gradle plugin which generates simple object and builder classes fo
 
 5. Add the parameters from the first Fragment to second Fragment action.
    
-   ```kotlin
-   // Adding the parameters to the Action
-   view.findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameWonFragment(numQuestions, questionIndex))
-   ```
+```kotlin
+// Adding the parameters to the Action
+view.findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameWonFragment(numQuestions, questionIndex))
+```
 
 6. Fetch the args and expand into a class in `onCreate` within the second Fragment.
    
-   ```kotlin
-   val args = GameWonFragmentArgs.fromBundle(arguments!!)
-   ```
+```kotlin
+val args = GameWonFragmentArgs.fromBundle(arguments!!)
+```
 
 7. Display the arguments using a `Toast`.
    
-   ```kotlin
-   Toast.makeText(context, "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}", Toast.LENGTH_LONG).show()
-   ```
+```kotlin
+Toast.makeText(context, "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}", Toast.LENGTH_LONG).show()
+```
 
 ### Intents and Sharing
 
@@ -345,116 +348,116 @@ An Intent is an "intention" to perform an action; a messaging object you can use
 
 1. Create new menu resource, which has icon, title and [showAsAction](https://developer.android.com/guide/topics/resources/menu-resource) attribute. 
    
-   ```xml
-   <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-       xmlns:android="http://schemas.android.com/apk/res/android">
-       <item
-           android:id="@+id/share"
-           android:enabled="true"
-           android:icon="@drawable/share"
-           android:title="@string/share"
-           android:visible="true"
-           app:showAsAction="ifRoom" />
-   </menu>
-   ```
+```xml
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:android="http://schemas.android.com/apk/res/android">
+   <item
+       android:id="@+id/share"
+       android:enabled="true"
+       android:icon="@drawable/share"
+       android:title="@string/share"
+       android:visible="true"
+       app:showAsAction="ifRoom" />
+</menu>
+```
 
 2. Add `setHasOptionsMenu(true)` to `onCreateView() `in our the Fragment.
    
-   ```kotlin
-   // Declaring that our Fragment has a Menu
-   setHasOptionsMenu(true)
-   ```
+```kotlin
+// Declaring that our Fragment has a Menu
+setHasOptionsMenu(true)
+```
 
 3. Create a `getShareIntent` method. Get the args and build the `shareIntent` inside.
    
-   ```kotlin
-   private fun getShareIntent(): Intent {
-       val args = GameWonFragmentArgs.fromBundle(arguments!!)
-       val shareIntent = Intent(Intent.ACTION_SEND)
-       shareIntent.setType("text/plain").putExtra(
-           Intent.EXTRA_TEXT,
-           getString(R.string.share_success_text, args.numCorrect, args.numQuestions)
-       )
-       return shareIntent
-   }
-   ```
+```kotlin
+private fun getShareIntent(): Intent {
+   val args = GameWonFragmentArgs.fromBundle(arguments!!)
+   val shareIntent = Intent(Intent.ACTION_SEND)
+   shareIntent.setType("text/plain").putExtra(
+       Intent.EXTRA_TEXT,
+       getString(R.string.share_success_text, args.numCorrect, args.numQuestions)
+   )
+   return shareIntent
+}
+```
    
    Or even better, using `IntentBuilder`
    
-   ```kotlin
-   private fun getShareIntent(): Intent {
-       val args = GameWonFragmentArgs.fromBundle(arguments!!)
-       return ShareCompat.IntentBuilder.from(activity)
-           .setText(getString(R.string.share_success_text, args.numCorrect, args.numQuestions)).setType("text/plain")
-           .intent
-   }
-   ```
+```kotlin
+private fun getShareIntent(): Intent {
+   val args = GameWonFragmentArgs.fromBundle(arguments!!)
+   return ShareCompat.IntentBuilder.from(requireActivity())
+       .setText(getString(R.string.share_success_text, args.numCorrect, args.numQuestions)).setType("text/plain")
+       .intent
+}
+```
 
 4. Create a `shareSuccess` method that starts the activity from the share Intent.
    
-   ```kotlin
-   // Starting an Activity with our new Intent
-   private fun shareSuccess() {
-      startActivity(getShareIntent())
-   }
-   ```
+```kotlin
+// Starting an Activity with our new Intent
+private fun shareSuccess() {
+    startActivity(getShareIntent())
+}
+```
 
 5. Override `onCreateOptionsMenu` and inflate the menu xml.
    
-   ```kotlin
-       override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-           super.onCreateOptionsMenu(menu, inflater)
-           inflater?.inflate(R.menu.winner_menu, menu)
-       }
-   ```
+```kotlin
+override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    super.onCreateOptionsMenu(menu, inflater)
+    inflater.inflate(R.menu.winner_menu, menu)
+}
+```
 
 6. Override `onOptionsIemSelected` to link the menu to the `shareSuccess` action.
    
-   ```kotlin
-   // Sharing from the Menu
-   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-      when (item!!.itemId) {
-          R.id.share -> shareSuccess()
-      }
-      return super.onOptionsItemSelected(item)
-   }
-   ```
+```kotlin
+// Sharing from the Menu
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    when (item.itemId) {
+        R.id.share -> shareSuccess()
+    }
+    return super.onOptionsItemSelected(item)
+}
+```
 
 7. Hide the sharing menu item if the sharing intent doesn’t resolve to an Activity.
    
    Get the shareIntent using `getShareIntent()` and call `resolveActivity` using the `packageManger` to make sure our shareIntent resolves to an activity. If the result equals null, which means that it doesn’t resolve, we find our sharing menu item from the inflated menu and set its visibility to false.
    
-   ```kotlin
-   // Showing the Share Menu Item Dynamically
-   override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-      super.onCreateOptionsMenu(menu, inflater)
-      inflater?.inflate(R.menu.winner_menu, menu)
-      // check if the activity resolves
-      if (null == getShareIntent().resolveActivity(activity!!.packageManager)) {
-          // hide the menu item if it doesn't resolve
-          menu?.findItem(R.id.share)?.setVisible(false)
-      }
-   }
-   ```
+```kotlin
+// Showing the Share Menu Item Dynamically
+override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    super.onCreateOptionsMenu(menu, inflater)
+    inflater.inflate(R.menu.winner_menu, menu)
+    // check if the activity resolves
+    if (null == getShareIntent().resolveActivity(activity!!.packageManager)) {
+      // hide the menu item if it doesn't resolve
+      menu.findItem(R.id.share)?.isVisible = false
+    }
+}
+```
    
    <u>**Alternative:**</u> You can just catch the exception and show a toast.
    
-   ```kotlin
-           try {
-               startActivity(shareIntent)
-           } catch (ex: ActivityNotFoundException) {
-               Toast.makeText(this, getString(R.string.sharing_not_available),
-                       Toast.LENGTH_LONG).show()
-           }
-   ```
+```kotlin
+try {
+    startActivity(shareIntent)
+    } catch (ex: ActivityNotFoundException) {
+    Toast.makeText(this, getString(R.string.sharing_not_available),
+           Toast.LENGTH_LONG).show()
+}
+```
 
 ### Adding the Navigation Drawer
 
 1. Add Material Design to `app/build.gradle`.
    
-   ```groovy
-       implementation "com.google.android.material:material:$version_material"
-   ```
+```groovy
+implementation "com.google.android.material:material:$version_material"
+```
 
 2. Add the `RulesFragment` to the navigation graph.
    
@@ -466,79 +469,79 @@ An Intent is an "intention" to perform an action; a messaging object you can use
 
 4. Add the `DrawerLayout` into the `activity_main` layout containing the `LinearLayout` and `navHostFragment`.
    
-   ```xml
-   <layout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-   
-      <androidx.drawerlayout.widget.DrawerLayout
-          android:id="@+id/drawerLayout"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-      >
-   ```
+```xml
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.drawerlayout.widget.DrawerLayout
+  android:id="@+id/drawerLayout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+>
+```
 
 5. Add the `NavigationView` at the bottom of the the `DrawerLayout`.
    
-   ```xml
-   <com.google.android.material.navigation.NavigationView
-      android:id="@+id/navView"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:layout_gravity="start"
-      app:menu="@menu/navdrawer_menu" />
-   ```
+```xml
+<com.google.android.material.navigation.NavigationView
+  android:id="@+id/navView"
+  android:layout_width="wrap_content"
+  android:layout_height="match_parent"
+  android:layout_gravity="start"
+  app:menu="@menu/navdrawer_menu" />
+```
 
 6. In `MainActivity` and add private lateinit vars for `drawerLayout` and `appBarConfiguration`.
    
-   ```kotlin
-   private lateinit var drawerLayout: DrawerLayout
-   private lateinit var appBarConfiguration: AppBarConfiguration
-   ```
+```kotlin
+private lateinit var drawerLayout: DrawerLayout
+private lateinit var appBarConfiguration: AppBarConfiguration
+```
 
 7. Initialize the `drawerLayout` from the binding variable.
    
-   ```kotlin
-           val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-           // Initialize drawerLayout var from binding
-           drawerLayout = binding.drawerLayout
-   ```
+```kotlin
+val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+// Initialize drawerLayout var from binding
+drawerLayout = binding.drawerLayout
+```
 
 8. Add the `DrawerLayout` as the third parameter to `setupActionBarWithNavController`.
    
-   ```kotlin
-           // Add the DrawerLayout as the second parameter to setupActionBarWithNavController
-           // NavigationUI.setupActionBarWithNavController(this, navController)
-           NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
-   ```
+```kotlin
+// Add the DrawerLayout as the second parameter to setupActionBarWithNavController
+// NavigationUI.setupActionBarWithNavController(this, navController)
+NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+```
 
 9. Create an `appBarConfiguration` with the `navController.graph` and `drawerLayout`.
    
-   ```kotlin
-   appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
-   ```
+```kotlin
+appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+```
 
 10. Hook up the navigation UI up to the navigation view.
     
-    ```kotlin
-    NavigationUI.setupWithNavController(binding.navView, navController)
-    ```
+```kotlin
+NavigationUI.setupWithNavController(binding.navView, navController)
+```
 
 11. In `onSupportNavigateUp`, replace `navController.navigateUp` with `NavigationUI.navigateUp` with `appBarConfiguration` as parameter.
     
-    ```kotlin
-       override fun onSupportNavigateUp(): Boolean {
-           val navController = this.findNavController(R.id.myNavHostFragment)
-           // Replace navController.navigateUp with NavigationUI.navigateUp with drawerLayout param
-           // return navController.navigateUp()
-           return NavigationUI.navigateUp(navController, appBarConfiguration)
-       }
-    ```
+```kotlin
+override fun onSupportNavigateUp(): Boolean {
+   val navController = this.findNavController(R.id.myNavHostFragment)
+   // Replace navController.navigateUp with NavigationUI.navigateUp with drawerLayout param
+   // return navController.navigateUp()
+   return NavigationUI.navigateUp(navController, appBarConfiguration)
+}
+```
 
 12. To make the navigation header looks better, in the `NavigationView` at the bottom of the `DrawerLayout` within the main activity layout file, add the nav header as the `headerLayout`.
     
-    ```xml
-       app:headerLayout="@layout/nav_header"
-    ```
+```xml
+app:headerLayout="@layout/nav_header"
+```
 
 #### How to Navigate
 
@@ -556,7 +559,7 @@ An Intent is an "intention" to perform an action; a messaging object you can use
 
 - The allow us to react and do something during navigation, or in our case block the draw from coming out after navigating away from the start destination.
 
-- Using navigation listener within onCreate to get called whenever the destination changes.
+- Using navigation listener within `onCreate` to get called whenever the destination changes.
 
 To prevent the drawer from being swiped anywhere other than the `startDestination`, call `addOnDestinationChangedListener` with a lambda that sets the `DrawerLockMode` depending on what destination we’re navigating to. When the id of our `NavDestination` matches the `startDestination` of our graph, we’ll unlock the `drawerLayout`; otherwise, we’ll lock and close the `drawerLayout`.
 
@@ -610,35 +613,35 @@ Alpha describes how transparent something is. At 0% alpha the view would be invi
 
 - When we open the newly created fade_in.xml file, it will contain an empty animation set:
   
-  ```xml
-  <set xmlns:android="http://schemas.android.com/apk/res/android">
-  </set>
-  ```
+```xml
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+</set>
+```
 
 - We need to add an alpha animation in there, going from 0 to 1 (fading in) and taking the medium animation time. We do that by setting `fromAlpha` to 0, `toAlpha` to 1, and the duration to `@android:integer/config_mediumAnimTime`.
   
-  ```xml
-  <!-- Fade In Animation -->
-  <set xmlns:android="http://schemas.android.com/apk/res/android">
-     <alpha
-         android:duration="@android:integer/config_mediumAnimTime"
-         android:fromAlpha="0.0"
-         android:toAlpha="1.0" />
-  </set>
-  ```
+```xml
+<!-- Fade In Animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+ <alpha
+     android:duration="@android:integer/config_mediumAnimTime"
+     android:fromAlpha="0.0"
+     android:toAlpha="1.0" />
+</set>
+```
 
 - To create slide in left animation resource we need to do the same thing for the `slide_in_left` animation. We start by creating the file, and get an empty animation set. We then need to add a translate animation in there, going from -100% off screen in the X axis to 0% offscreen in the X axis. Let’s do this one with a short duration. For the Y axis, we’ll be at 0 (onscreen) at the start and end of the animation.
   
-  ```xml
-  <set xmlns:android="http://schemas.android.com/apk/res/android">
-     <translate
-         android:fromXDelta="-100%"
-         android:toXDelta="0%"
-         android:fromYDelta="0%"
-         android:toYDelta="0%"
-         android:duration="@android:integer/config_shortAnimTime" />
-  </set>
-  ```
+```xml
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+ <translate
+     android:fromXDelta="-100%"
+     android:toXDelta="0%"
+     android:fromYDelta="0%"
+     android:toYDelta="0%"
+     android:duration="@android:integer/config_shortAnimTime" />
+</set>
+```
 
 #### Adding transitions to actions
 

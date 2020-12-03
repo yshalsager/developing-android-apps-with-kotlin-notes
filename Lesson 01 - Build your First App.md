@@ -16,15 +16,15 @@
 
 ### [AndroidManifest.xml](https://developer.android.com/guide/topics/manifest/manifest-intro)
 
-- ```xml
+```xml
   package="com.example.diceroller"
-  ```
+```
 
 The name in the manifest's `package` attribute should always match your project's base package name where you keep your activities and other app code.
 
 The `package` attribute also represents your app's universally unique application ID.
 
-- ```xml
+```xml
   <manifest package="com.example.myapp" ... >
       <application ... >
           <activity android:name=".MainActivity" ... >
@@ -35,7 +35,7 @@ The `package` attribute also represents your app's universally unique applicatio
           </activity>
       </application>
   </manifest>
-  ```
+```
 
 This intent-filter tells the OS where to start the app when the user clicks on the app icon. 
 
@@ -108,21 +108,21 @@ By using `findViewById`to get a reference to the element.
 
 - in xml layout file:
   
-  ```xml
+```xml
   android:id="@+id/roll_button"
-  ```
+```
 
 - in Kotlin file, set a [button](https://developer.android.com/reference/kotlin/android/widget/Button.html) with:
   
-  ```kotlin
+```kotlin
   val rollButton: Button = findViewById(R.id.roll_button)
-  ```
+```
 
 - To change a property of the element you can call methods directly:
   
-  ```kotlin
+```kotlin
   rollButton.text = "Let's Roll"
-  ```
+```
 
 ### [OnClickListener](https://developer.android.com/reference/kotlin/android/view/View.OnClickListener.html)
 
@@ -130,11 +130,11 @@ Interface definition for a callback to be invoked when a view is clicked.
 
 - setting a button OnClickListener
   
-  ```kotlin
+```kotlin
   rollButton.setOnClickListener {
       ....
   }
-  ```
+```
 
 ### [Toast](https://developer.android.com/reference/kotlin/android/widget/Toast.html)
 
@@ -142,9 +142,9 @@ A toast is a view containing a quick little message for the user.
 
 - Showing a Toast message
   
-  ```kotlin
+```kotlin
   Toast.makeText(this, "button clicked", Toast.LENGTH_SHORT).show()
-  ```
+```
 
 ### [ImageView](https://developer.android.com/reference/kotlin/android/widget/ImageView.html)
 
@@ -210,17 +210,17 @@ It controls:
 
 - Plugins repositories:
   
-  ```groovy
+```groovy
   buildscript {                 
       repositories {
           google()
           jcenter()
       }
-  ```
+```
 
-- Android app config:
+- Android app configuration:
   
-  ```groovy
+```groovy
   android {
       compileSdkVersion 26
       defaultConfig {
@@ -238,17 +238,17 @@ It controls:
           }
       }
   }
-  ```
+```
 
 - External Dependencies:
   
-  ```groovy
+```groovy
   dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation 'com.android.support:appcompat-v7:26.1.0'
   androidTestImplementation 'com.android.support.test:runner:1.0.1'
   }
-  ```
+```
 
 ### Vector Drawables
 
