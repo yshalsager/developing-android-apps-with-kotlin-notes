@@ -56,35 +56,35 @@ Timber needs to use an application class because the whole app will be using thi
 
 - Add the timber library in `app/build.gradle`.
   
-  ```groovy
-  implementation 'com.jakewharton.timber:timber:4.7.1'
-  ```
+```groovy
+implementation 'com.jakewharton.timber:timber:4.7.1'
+```
 
 - Make application class.
   
   An application class is a base class that contains global application state for your entire app.
   
-  ```kotlin
-  class PusherApplication : Application() {
-     override fun onCreate() {
-         super.onCreate()
-     }
-  }
-  ```
+```kotlin
+class PusherApplication : Application() {
+ override fun onCreate() {
+     super.onCreate()
+ }
+}
+```
 
 - Add application class to `<application>` tag in the manifest.
   
-  ```xml
-  android:name=".PusherApplication"
-  ```
+```xml
+android:name=".PusherApplication"
+```
 
 - Initialize Timber in the application class.
   
   The installation of logging trees should be done as early as possible. The `onCreate` of your application is the most logical choice. Go ahead, locate the `onCreate` callback in your application class and plant Timber tree there.
   
-  ```kotlin
-  Timber.plant(Timber.DebugTree())
-  ```
+```kotlin
+Timber.plant(Timber.DebugTree())
+```
 
 ### Active Lifecycle Diagram
 
@@ -126,6 +126,8 @@ These are the same for both the Fragment Lifecycle and the Activity Lifecycle.
 
 ### Activity Lifecycle Callbacks
 
+![Activity Lifecycle.png](images/Activity Lifecycle.png)
+
 **onCreate:** This is called the first time the activity starts and is therefore only called once during the lifecycle of the activity. It represents when the activity is created and initialized. The activity is not yet visible and you can't interact with it. You must implement onCreate. In onCreate you should:
 
 - Inflate the activity's UI, whether that's using `findViewById` or databinding.
@@ -161,6 +163,8 @@ These are the same for both the Fragment Lifecycle and the Activity Lifecycle.
 Fragments also have lifecycle states that they go-between. The lifecycle states are the same as the activity states. You’ll notice that in your Android Trivia app, you’re using the `onCreateView` callback - while the fragment lifecycle states are the same, **the callbacks are different**.
 
 A deep dive into the fragment lifecycle could be a lesson in itself. Here, we’ll just cover the basics with the summary below:
+
+![Fragment Lifecycle.png](images/Fragment Lifecycle.png)
 
 #### Important Fragment Callbacks to Implement
 
@@ -232,29 +236,36 @@ So, Lifecycle-aware components perform actions in response to a change in the li
 
 - So if we think about our code, the activity is currently in charge of telling the timer to start and stop but if we were using the observer pattern we'd actually flip that responsibility of the relationship. Instead, the timer would become an observer of the activity as the activity state changes the timer would be notified it would then be the timer's responsibility to decide what to actually do with that information.
   In this case, it could call its own start and stop methods on itself.
-1. Make DessertTimer a LifecycleObserver:
+1. Make DessertTimer a `LifecycleObserver`:
    
-   DessertTimer should implement a LifecycleObserver, take in a Lifecycle as a parameter.
+   DessertTimer should implement a `LifecycleObserver`, take in a Lifecycle as a parameter.
    
-   ```kotlin
-   class DessertTimer(lifecycle: Lifecycle) : LifecycleObserver {
-   ```
+```kotlin
+class DessertTimer(lifecycle: Lifecycle) : LifecycleObserver {
+```
    
    Then establish observer relationship in init block.
    
-   ```kotlin
-    init {
-        lifecycle.addObserver(this)
-    }
-   ```
+```kotlin
+init {
+    lifecycle.addObserver(this)
+}
+```
 
 2. Pass in 'this' MainActivity's lifecycle so that it is observed:
    
-   ```kotlin
-   dessertTimer = DessertTimer(this.lifecycle)
-   ```
+```kotlin
+dessertTimer = DessertTimer(this.lifecycle)
+```
 
 3. Annotate startTimer and stopTimer with @OnLifecycleEvent and the correct event:
+```kotlin
+@OnLifecycleEvent(Lifecycle.Event.ON_START)
+fun startTimer() {...}
+
+@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+fun stopTimer() {...}
+```
 
 ### Process Shutdown
 
@@ -341,49 +352,49 @@ Store only data smaller than 100KB.
    
    You can use the keyboard shortcut Ctrl + O to do this. For `onSaveInstanceState`, you can use the [version that has one parameter](https://developer.android.com/reference/android/app/Activity.html#onSaveInstanceState(android.os.Bundle)), the Bundle (`onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle): Unit`).
    
-   ```kotlin
-       override fun onSaveInstanceState(outState: Bundle) {
-           Timber.i("onSaveInstanceState Called")
-           super.onSaveInstanceState(outState)
-       }
-   ```
+```kotlin
+override fun onSaveInstanceState(outState: Bundle) {
+   Timber.i("onSaveInstanceState Called")
+   super.onSaveInstanceState(outState)
+}
+```
 
 2. Save the data in `onSaveInstanceState`:
    
    You should save the `revenue`, `dessertsSold` and `dessertTimer.secondsCount` in the state Bundle.
    
-   ```kotlin
-   outState.putInt("key_revenue", revenue)
-   ```
+```kotlin
+outState.putInt("key_revenue", revenue)
+```
    
    It's preferred to store keys in constants.
    
-   ```kotlin
-   /** onSaveInstanceState Bundle Keys **/
-   const val KEY_REVENUE = "revenue_key"
-   const val KEY_DESSERT_SOLD = "dessert_sold_key"
-   const val KEY_TIMER_SECONDS = "timer_seconds_key"
-   ```
+```kotlin
+/** onSaveInstanceState Bundle Keys **/
+const val KEY_REVENUE = "revenue_key"
+const val KEY_DESSERT_SOLD = "dessert_sold_key"
+const val KEY_TIMER_SECONDS = "timer_seconds_key"
+```
    
    And thus, the will be like:
    
-   ```kotlin
-           outState.putInt(KEY_REVENUE, revenue)
-           outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
-           outState.putInt(KEY_TIMER_SECONDS, dessertTimer.secondsCount)
-   ```
+```kotlin
+outState.putInt(KEY_REVENUE, revenue)
+outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+outState.putInt(KEY_TIMER_SECONDS, dessertTimer.secondsCount)
+```
 
 3. Retrieve and use the data in `onCreate` if you're restarting to Activity:
    
    Check that the Bundle is not null in `onCreate`, and then retrieve and use the data. For example:
    
-   ```kotlin
-   if (savedInstanceState != null) {
-           revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
-           dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD, 0)
-           dessertTimer.secondsCount = savedInstanceState.getInt(KEY_TIMER_SECONDS, 0)
-        }
-   ```
+```kotlin
+if (savedInstanceState != null) {
+       revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
+       dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD, 0)
+       dessertTimer.secondsCount = savedInstanceState.getInt(KEY_TIMER_SECONDS, 0)
+    }
+```
 
 ### Configuration Changes
 
