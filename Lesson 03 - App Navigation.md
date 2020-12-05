@@ -314,6 +314,22 @@ apply plugin: 'androidx.navigation.safeargs'
 4. Add the Arguments using the navigation editor.
    
    Go to the navigation editor and select the `GameWon` fragment. Click the little triangle next to arguments to expand the argument section. Add a `numQuestions` and a `numCorrect` argument, both with integer type.
+```xml
+<fragment
+    android:id="@+id/gameFragment"
+    android:name="me.yshalsager.tictactoe.GameFragment"
+    android:label="@string/app_name"
+    tools:layout="@layout/fragment_game">
+    <action
+        android:id="@+id/action_gameFragment_to_winFragment"
+        app:destination="@id/winFragment" />
+    <argument
+        android:name="winner"
+        app:argType="integer" />
+</fragment>
+```
+
+_Note:_ To add `ArrayList` to arguments you can use `app:argType="string[]"` as fragment argument type.
 
 5. Add the parameters from the first Fragment to second Fragment action.
    

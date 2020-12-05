@@ -396,6 +396,12 @@ if (savedInstanceState != null) {
     }
 ```
 
+_Note:_ To put/restore complex data types you can do something like:
+```kotlin
+outState.putSerializable(KEY_BOARD, playBoard)
+playBoard = savedInstanceState.getSerializable(KEY_BOARD) as ArrayList<String>
+```
+
 ### Configuration Changes
 
 - Rotate your phone and record the callbacks triggered:
