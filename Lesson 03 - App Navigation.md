@@ -98,8 +98,8 @@ It's important to have principles such as these implemented across a wide range 
 dependencies {
    ...
    // Navigation
-   implementation "android.arch.navigation:navigation-fragment-ktx:$version_navigation"
-   implementation "android.arch.navigation:navigation-ui-ktx:$version_navigation"
+   implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
+   implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
 }
 ```
 
