@@ -62,6 +62,12 @@ data class SleepNight  (
 )
 ```
 
+**Note:** [currentTimeMillis](https://developer.android.com/reference/java/lang/System#currentTimeMillis()) method returns the current time in milliseconds. It can be formatted using [SimpleDateFormat](https://developer.android.com/reference/java/text/SimpleDateFormat). For example:
+
+```kotlin
+SimpleDateFormat("EEEE MMM-dd-yyyy' Time: 'HH:mm").format(systemTime).toString()
+```
+
 3. Annotate the data class with `@Entity`, and name the table `daily_sleep_quality_table`. (Remember to perform the necessary imports for this and all the following annotations.)
 
 ```kotlin
@@ -165,6 +171,9 @@ fun getTonight(): SleepNight?
 @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC")
 fun getAllNights(): LiveData<List<SleepNight>>
 ```
+
+##### Suspend functions and LiveData in DAO
+Note that functions that return `LiveData` in the DAO can't use suspend keyword because it will cause compile-time errors.
 
 ### Creating a [Room](https://developer.android.com/reference/android/arch/persistence/room/RoomDatabase) [Database](https://developer.android.com/reference/android/arch/persistence/room/Database)
 You need to create an abstract database holder class, annotated with `@Database`. This class has one method that either creates an instance of the database if the database doesn't exist, or returns a reference to an existing database.
