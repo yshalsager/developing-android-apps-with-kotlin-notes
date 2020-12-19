@@ -4,6 +4,8 @@
 
 Most apps have data that needs to be kept, even after the user closes the app. For example, the app might store a playlist, an inventory of game items, records of expenses and income, a catalog of constellations, or sleep data over time. Commonly, you would use a database to store persistent data.Most apps have data that needs to be kept, even after the user closes the app. For example, the app might store a playlist, an inventory of game items, records of expenses and income, a catalog of constellations, or sleep data over time. Commonly, you would use a database to store persistent data.
 
+***
+
 ### Tour of the App
 
 - The app will show the UI for the `SleepTrackerFragment`, but no data, and the buttons do not respond to clicks.
@@ -28,9 +30,13 @@ implementation "androidx.room:room-ktx:$version_room"
 - The `Util.kt` file contains functions to help display sleep quality data. Some code is commented out because it references a `ViewModel`, which you will create later.
 - **androidTest folder/SleepDatabaseTest.kt** will be used to verify that the database is working as intended.
 
+***
+
 ### SQL
 This course assumes that you are familiar with databases in general, SQL databases in particular, and the SQL language used to interact with them.
 This [page](https://developer.android.com/courses/extras/sql-primer) is a refresher and quick reference about SQLite.
+
+***
 
 ### Designing Entities
 
@@ -103,6 +109,8 @@ data class SleepNight(
 )
 ```
 
+***
+
 ### Data Access Object (DAO)
 - When you use a `Room` database, you query the database by defining and calling Kotlin functions in your code. These Kotlin functions map to SQL queries. You define those mappings in a DAO using annotations, and `Room` creates the necessary code.
 - Think of a DAO as defining a custom interface for accessing your database.
@@ -116,6 +124,8 @@ For the sleep-tracker database of sleep nights, you need to be able to do the fo
 * **Get all nights**, so you can display them.
 * **Get the most recent night.** when we don't have a key that matches.
 * **Delete** all entries in the database.
+
+***
 
 ### Creating the SleepDatabase DAO
 1. In the `database` package, open `SleepDatabaseDao.kt`. Create an interface `SleepDatabaseDao` and annotate it with `@Dao`.
@@ -174,6 +184,8 @@ fun getAllNights(): LiveData<List<SleepNight>>
 
 ##### Suspend functions and LiveData in DAO
 Note that functions that return `LiveData` in the DAO can't use suspend keyword because it will cause compile-time errors.
+
+***
 
 ### Creating a [Room](https://developer.android.com/reference/android/arch/persistence/room/RoomDatabase) [Database](https://developer.android.com/reference/android/arch/persistence/room/Database)
 You need to create an abstract database holder class, annotated with `@Database`. This class has one method that either creates an instance of the database if the database doesn't exist, or returns a reference to an existing database.
@@ -362,6 +374,8 @@ abstract class SleepDatabase : RoomDatabase() {
 ```
 You now have all the building blocks for working with your `Room` database. This code compiles and runs, but you have no way of telling if it actually works. So, this is a good time to add some basic tests.
 
+***
+
 ### [Testing](https://developer.android.com/training/testing) the Room Database
 In this step, you run provided tests to verify that your database works. This helps ensure that the database works before you build onto it. The provided tests are basic. For a production app, you would exercise all of the functions and queries in all the DAOs.
 
@@ -377,6 +391,8 @@ Here's a quick run-through of the testing code, because it's another piece of co
 * Also when building the in-memory database, the code calls another test-specific method, `allowMainThreadQueries`. By default, you get an error if you try to run queries on the main thread. This method allows you to run tests on the main thread, which you should only do during testing.
 * In a test method annotated with `@Test`, you create, insert, and retrieve a `SleepNight`, and assert that they are the same. If anything goes wrong, throw an exception. In a real test, you would have multiple `@Test`  methods.
 * When testing is done, the function annotated with `@After` executes to close the database.
+
+***
 
 ### Displaying Sleep Data
 Open `activity_main.xml`. This layout contains the `nav_host_fragment`.
@@ -396,6 +412,8 @@ Also, notice the `merge` tag. The merge tag can be used to eliminate redundant l
 
 </merge>
 ```
+
+***
 
 ### Adding A ViewModel
 Now that you have a database and a UI, you need to collect data, add the data to the database, and display the data. All this work is done in the view model. Your sleep-tracker view model will handle button clicks, interact with the database via the `DAO`, and provide data to the UI via `LiveData`. All database operations will have to be run away from the main UI thread, and you'll do that using `coroutines`.
@@ -515,6 +533,8 @@ binding.sleepTrackerViewModel = sleepTrackerViewModel
 binding.lifecycleOwner = this
 ```
 
+***
+
 ### Multithreading and Coroutines
 To use processors more efficiently, the operating system can enable an application to create more than one thread of execution within a process.
 
@@ -530,6 +550,8 @@ A user-facing application usually has a main thread that runs in a foreground an
 It's essential to avoid blocking the UI thread. Blocking in this context means the UI thread is waiting,
 not doing anything at all for an action to be done. For example, something like a database to be done updating. Many common tasks take longer than 16 milliseconds, such as fetching data from the internet,
 reading a large file, or writing data to a database. Therefore, calling code like this from the main thread can cause the app to pause, stutter or even freeze.
+
+***
 
 ### [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 #### Callbacks
@@ -589,6 +611,8 @@ To use coroutines in Kotlin, you need three things:
 
 #### Room and Dispatcher
 When using the Room library to perform a database operation, Room uses a `Dispatchers.IO` for you to perform the database operations in the background. You don't have to explicitly specify the `Dispatchers`.
+
+***
 
 ### Implementing Coroutines
 <details><summary>Old method</summary>
@@ -930,6 +954,8 @@ private suspend fun clear() {
 android:onClick="@{() -> sleepTrackerViewModel.onClear()}"
 ```
 
+***
+
 ### Navigation and Sleep Quality
 * Now to give users a way to enter the sleep quality, we are going to use a fragment with touchable icons.
 * We press "START" to start the sleep night. Then when we press "STOP" and we navigate back to the sleep quality tracker fragment, where we can press a pretty smiley icon, which takes us right back and updates the sleep quality.
@@ -941,6 +967,8 @@ In more pragmatic terms, our basic workflow is the user presses, "STOP" is:
 * As an additional challenge, we also need to handle the back button.
 * We want the navigation to happen in the fragment, but the click handler stays in the `ViewModel` processing the data.
 * We do this by creating a navigation event variable in a `ViewModel`, observe the variable, when the variable changes navigate immediately, and create a navigation event variable to signify we have finished navigating.
+
+***
 
 ### Recording Sleep Quality
 #### Add navigation
@@ -1180,6 +1208,8 @@ sleepQualityViewModel.navigateToSleepTracker.observe(viewLifecycleOwner, Observe
 android:onClick="@{() -> sleepQualityViewModel.onSetSleepQuality(5)}"
 ```
 
+***
+
 ### Button States
 Now your app works great. The user can tap **Start** and **Stop** as many times as they want. When the user taps **Stop**, they can enter a sleep quality. When the user taps **Clear**, all the data is cleared silently in the background. However, all the buttons are always enabled and clickable, which does not break the app, but it does allow users to create incomplete sleep nights.
 
@@ -1248,6 +1278,8 @@ A default style is applied to a disabled `View` to visually represent that the `
 However, if the `View` has a `background` attribute or a `textColor` attribute, the values of those attributes are used when the `View` is displayed, _even if the_ _`View`_ _is disabled._
 
 To define which colors to use for enabled and disabled states, use a [`ColorStateList`](https://developer.android.com/guide/topics/resources/color-list-resource) for the text color and a [`StateListDrawable`](https://developer.android.com/guide/topics/resources/drawable-resource#StateList) for the background color.
+
+***
 
 ### [SnackBar](https://material.io/develop/android/components/snackbar/)
 After the user clears the database, show the user a confirmation using the [`Snackbar`](https://material.io/develop/android/components/snackbar/) widget. A _snackbar_ provides brief feedback about an operation through a message at the bottom of the screen. A snackbar disappears after a timeout, after a user interaction elsewhere on the screen, or after the user swipes the snackbar off the screen.

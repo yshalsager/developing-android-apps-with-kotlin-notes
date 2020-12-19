@@ -5,18 +5,14 @@
 ### Navigation Terms
 
 - **Action Bar**: Appears at the top of the application screen. Contains application branding and navigation features such as the overflow menu and the application drawer button.
-
 - **Navigation Drawer**: A menu with a header that slides out from the side of the app.
-
 - **Navigation Graph**: All of the destinations -- the screens that can be navigated to from a single activity are contained in this.
-
 - **Overflow Menu**: A drop down list of items within the Action Bar that can contain navigation destinations.
-
 - **Up Button**: Appears in the action bar and takes us back through previous screens the user has navigated to within the app.
-
 - **The Activity layout**: UI Fragments contain a layout and occupy a place within.
-
 - **context**: Use this property from within a Fragment to get access to string and image resources.
+
+***
 
 ### Fragments
 
@@ -34,6 +30,8 @@
 
 - Another difference since activities inherit from the `context` class but fragments do not. You'll need to use the `context` property within a  fragment to have access to app data typically associated with the context such as string and image resources.
 
+***
+
 ### Navigation between fragments and activities
 
 - You can navigate between different activities and between fragments in an activity.
@@ -46,10 +44,14 @@
 
 - When a fragment is instantiated by the fragment manager the fragment transaction can optionally be added to the fragment back stack if our example trivia app was written using fragments and we were in the game screen the fragment back stack would contain a transaction to return us to the title screen fragment. Hitting the back key would execute this transaction effectively popping the game screen fragment off of the stack and replacing it with the title screen fragment. Hitting it again would pass the back operation through to the activity back stack finishing the activity and exiting the app.
 
+***
+
 ### Choosing navigation pattern
 
 Ultimately you can design your navigation with either an activity containing a series of fragments, a series of activities, or a combination of both techniques.
 For this class we're focusing on the single activity multiple fragment model which allows you to visualize your entire apps navigation within a single graph.
+
+***
 
 ### Creating And Adding A Fragment
 
@@ -76,6 +78,8 @@ override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
    android:layout_height="match_parent" />
 ```
 
+***
+
 ### Principles of Navigation
 
 The navigation component simplifies many navigation tasks more importantly it does so in a consistent way helping developers follow android's principles of navigation.
@@ -87,6 +91,8 @@ The navigation component simplifies many navigation tasks more importantly it do
 - The third principle of navigation involves the way the user gets back to a previous destination. The UP button in the action bar and the system back button both work the same way when navigating within your apps task. The back button will also navigate out of your app and to other apps typically the launcher. correspondingly if the users at the start destination the UP button should not be shown. **(Up goes back, mostly)**
 
 It's important to have principles such as these implemented across a wide range of Android apps to provide a consistent and predictable experience for users.
+
+***
 
 ### Starting Navigation
 
@@ -190,13 +196,16 @@ binding.playButton.setOnClickListener(
        Navigation.createNavigateOnClickListener(R.id.action_titleFragment_to_gameFragment))
 ```
 
+***
+
 ### Back Stack Manipulation
 
 - **PopTo Inclusive**: Pops off everything on the back stack, including the referenced fragment transaction.
-
 - **PopTo Not-Inclusive**: Pops off everything on the back stack until it finds the referenced fragment transaction.
 
 From the navigation editor, select the action for navigating from the `GameFragment` to the `GameOverFragment`. Select `PopTo` `GameFragment` in the attributes pane with the `inclusive` flag to tell the Navigation component to pop fragments off of the fragment back stack until it finds the `GameFragment`, and then pop off the `gameFragment` transaction.
+
+***
 
 ### Adding Support for the Up Button
 
@@ -223,16 +232,15 @@ override fun onSupportNavigateUp(): Boolean {
 }
 ```
 
+***
+
 ### Menus
 
 #### Menu Attributes
 
 - **title**: String displayed in the menu.
-
 - **onCreateOptionsMenu**: Where you inflate your menu.
-
 - **onOptionsItemSelected**: Called when a menu item is selected.
-
 - **setHasOptionsMenu**: Tells Android that the Fragment has a menu.
 
 #### Adding a Menu
@@ -277,6 +285,8 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
 ```
 _Note:_ `|| super.onOptionsItemSelected(item)` statement allows the app to handle regular menu actions that doesn't involve navigation.
 
+***
+
 ### Safe Arguments
 
 Safeargs is a Gradle plugin which generates simple object and builder classes for type-safe access to arguments specified for destinations and actions. It’s built on top of the Bundle approach and requires little more code for type safety.
@@ -284,7 +294,6 @@ Safeargs is a Gradle plugin which generates simple object and builder classes fo
 #### What are advantages we get from using safe arguments?
 
 - We get type safety, as navigation generates the action and the argument class from the navigation graph.
-
 - We get argument enforcement, as non-default arguments are required parameters in the action.
 
 #### Adding Safe Arguments
@@ -349,6 +358,8 @@ val args = GameWonFragmentArgs.fromBundle(arguments!!)
 ```kotlin
 Toast.makeText(context, "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}", Toast.LENGTH_LONG).show()
 ```
+
+***
 
 ### Intents and Sharing
 
@@ -467,6 +478,8 @@ try {
 }
 ```
 
+***
+
 ### Adding the Navigation Drawer
 
 1. Add Material Design to `app/build.gradle`.
@@ -562,19 +575,16 @@ app:headerLayout="@layout/nav_header"
 #### How to Navigate
 
 - **App Drawer navigation**: Defaults to popping everything off the backstack except for the start destination.
-
 - **DrawerLayout**: Provides the foundation for the sliding behavior of the navigation drawer.
-
 - **Menu navigation**: Adds to the backstack from the current position.
-
 - **NavigationView**: Material Design container that provides the look, feel, and functionality of the Navigation Drawer.
+
+***
 
 ### Using Navigation Listeners
 
 - Navigation listeners are interfaces that contains a single method that gets called every time we navigate.
-
 - The allow us to react and do something during navigation, or in our case block the draw from coming out after navigating away from the start destination.
-
 - Using navigation listener within `onCreate` to get called whenever the destination changes.
 
 To prevent the drawer from being swiped anywhere other than the `startDestination`, call `addOnDestinationChangedListener` with a lambda that sets the `DrawerLockMode` depending on what destination we’re navigating to. When the id of our `NavDestination` matches the `startDestination` of our graph, we’ll unlock the `drawerLayout`; otherwise, we’ll lock and close the `drawerLayout`.
@@ -589,6 +599,8 @@ navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestin
    }
 }
 ```
+
+***
 
 ### Animation with Navigation
 
@@ -606,27 +618,20 @@ Alpha describes how transparent something is. At 0% alpha the view would be invi
 #### Translate Animations
 
 - Translate animations can use twice the information as alpha animations because we control the change in X and the change in Y.
-
 - Changes in X and y are in percent offset.
-
 - Where 100% X is off-screen right and negative 100% X is off-screen left, while 0% is not offset.
-
 - Changing the Y from negative 100% to 0% will slide the fragment in from off-screen top, while changing the Y from 100% to 0% will slide the fragment in from off-screen bottom.
 
 #### Animation Attributes
 
 - **Enter Transition**: Played for the destination to be navigated to when it is entered.
-
 - **Exit Transition**: Played for the destination to be navigated to when another destination replaces the current one.
-
 - **Pop Enter Transition**: Played when the destination is returned to view from the back stack.
-
 - **Pop Exit Transition**: Played when the current destination is popped off the back stack.
 
 #### Creating Animations
 
 - To create fade in animation resource right click on the anim folder with New->Animation resource file and name it `fade_in`.
-
 - When we open the newly created fade_in.xml file, it will contain an empty animation set:
   
 ```xml

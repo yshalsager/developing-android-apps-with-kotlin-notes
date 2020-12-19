@@ -37,6 +37,8 @@ Android also ships with a few other options for displaying lists.
 * The first are `ListView` and `GridView` for displaying a scrolling list and grid respectively. You can think of this as `RecyclerView` simpler, but less powerful siblings. Both of them work for displaying a small list of items that aren't too complex, like 100 items. They are not nearly as efficient as `RecyclerView`, and they don't offer nearly as many options for customizing the display.
 * The other option is `LinearLayout`. You've already seen that earlier linear layout can be used to display a small list of items, for example three to five.
 
+***
+
 ### Your first RecyclerView
 
 #### The adapter pattern
@@ -92,6 +94,8 @@ To display your data in a `RecyclerView`, you need the following parts:
 – `onCreateViewHolder()` to return the `ViewHolder` for an item in the list. 
 – `onBindViewHolder()` to adapt the data to the views for an item in the list.
 ![RecyclerView_2.png](images/RecyclerView_2.png)
+
+***
 
 ### Adding a [RecyclerView](https://developer.android.com/reference/android/support/v7/widget/RecyclerView)
 
@@ -312,6 +316,8 @@ If your app compiles but doesn't work, here are a few things to check:
 * Does `data` in `SleepNightAdapter` hold a non-empty list?
 * Try setting a breakpoint in the setter and `getItemCount()`.
 
+***
+
 ### Recycling [ViewHolders](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.ViewHolder)
 
 `RecyclerView` _recycles_ view holders, which means that it reuses them. As a view scrolls off the screen, `RecyclerView` reuses the view for the view that's about to scroll onto the screen.
@@ -340,6 +346,8 @@ if (item.sleepQuality <= 1) {
   holder.textView.setTextColor(Color.BLACK) // black
 }
 ```
+
+***
 
 ### [ViewHolders](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView.ViewHolder.html)
 
@@ -522,6 +530,8 @@ override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 }
 ```
 
+***
+
 ### Refactor `onBindViewHolder`
 
 Your `RecyclerView` is now complete! You learned how to implement an `Adapter` and a `ViewHolder`, and you put them together to display a list with a `RecyclerView` `Adapter`.
@@ -652,6 +662,8 @@ var data = listOf<SleepNight>()
 
 Once `DiffUtil` figures out what has changed, `RecyclerView` can use that information to update only the items that were changed, added, removed, or moved, which is much more efficient than redoing the entire list.
 
+***
+
 ### Refresh Data with [DiffUtil](https://developer.android.com/reference/android/support/v7/util/DiffUtil)
 #### Step 1: Implement `SleepNightDiffCallback`
 
@@ -748,6 +760,8 @@ sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer {
   }
 })
 ```
+
+***
 
 ### Using `DataBinding` with `RecyclerView`
 
@@ -936,6 +950,8 @@ app:sleepQualityString="@{sleep}"
 
 You've displayed the same list for the last few exercises. That's by design, to show you that the `Adapter` interface allows you to architect your code in many different ways. The more complex your code, the more important it becomes to architect it well. In production apps, these patterns and others are used with `RecyclerView`. The patterns all work, and each has its benefits. Which one you choose depends on what you are building.
 
+***
+
 ### Using `GridLayout`
 
 #### Layouts and LayoutManagers
@@ -967,6 +983,8 @@ By default, each item takes up one span, but you can make an item wider by speci
 **Tip:** 
 >_Span_ can mean either "row" or "column." With [`GridLayoutManager`](https://developer.android.com/reference/android/support/v7/widget/GridLayoutManager), you use `spanCount` to indicate how many columns or rows a grid has, and also how much grid space an item takes up horizontally or vertically.
 > When you create a `GridLayoutManager`, you specify the orientation separately from the number of spans, and "span" is "direction-agnostic." In a (default) vertical configuration, "span" and "column" are equivalent.
+
+***
 
 ### Change LinearLayout to [GridLayout](https://developer.android.com/reference/android/support/v7/widget/GridLayout)
 
@@ -1071,6 +1089,8 @@ val manager = GridLayoutManager(activity, 5, GridLayoutManager.HORIZONTAL, false
 
 8. Don't forget to set the span count back to 3 and the orientation to vertical!
 
+***
+
 ### Interacting with List Items
 
 Receiving clicks and handling them is a two-part task: First, you need to listen to and receive the click and determine which item has been clicked. Then, you need to respond to the click with an action.
@@ -1106,7 +1126,7 @@ class SleepNightListener(val clickListener: (sleepId: Long) -> Unit) {
 }
 ```
 
-5. Open **list\_item\_sleep_night.xml.**. Inside the `data` block, add a new variable to make the `SleepNightListener` class available through data binding. Give the new `<variable>` a `name` of `clickListener.` Set the `type` to the fully qualified name of the class `com.example.android.trackmysleepquality.sleeptracker.SleepNightListener`, as shown below. You can now access the `onClick()` function in `SleepNightListener` from this layout.
+5. Open **list_item_sleep_night.xml.**. Inside the `data` block, add a new variable to make the `SleepNightListener` class available through data binding. Give the new `<variable>` a `name` of `clickListener.` Set the `type` to the fully qualified name of the class `com.example.android.trackmysleepquality.sleeptracker.SleepNightListener`, as shown below. You can now access the `onClick()` function in `SleepNightListener` from this layout.
 
 ```kotlin
 <variable
@@ -1159,6 +1179,8 @@ val adapter = SleepNightAdapter(SleepNightListener { nightId ->   Toast.makeTe
 ```
 
 3. Run the app, tap items, and verify that they display a toast with the correct `nightId`. Because items have increasing `nightId` values, and the app displays the most recent night first, the item with the lowest `nightId` is at the bottom of the list.
+
+***
 
 ### Navigate on Click
 
@@ -1252,6 +1274,8 @@ fun TextView.setSleepQualityString(item: SleepNight?) {
 }
 ```
 
+***
+
 ### Adding Headers to the `RecyclerView`
 
 One common example is having headers in your list or grid. A list can have a single header to describe the item content. A list can also have multiple headers to group and separate items in a single list.
@@ -1286,6 +1310,8 @@ Another way to add headers is to modify the backing dataset for your data grid. 
 Each methodology has benefits and drawbacks. Changing the dataset doesn't introduce much change to the rest of the adapter code, and you can add header logic by manipulating the list of data. On the other hand, using a different `ViewHolder` by checking indexes for headers gives more freedom on the layout of the header. It also lets the adapter handle how data is adapted to the view without modifying the backing data.
 
 In this lesson, you update your `RecyclerView` to display a header at the start of the list. In this case, your app will use a different `ViewHolder` for the header than for data items. The app will check the index of the list to determine which `ViewHolder` to use.
+
+***
 
 ### Add a List Header
 
@@ -1526,6 +1552,8 @@ fun addHeaderAndSubmitList(list: List<SleepNight>?) {
 }
 ```
 
+***
+
 ### Extend the header to span across the screen
 
 Currently, the header is the same width as the other items on the grid, taking up one span horizontally and vertically. The whole grid fits three items of one span width horizontally, so the header should use three spans horizontally.
@@ -1568,6 +1596,8 @@ android:layout_marginTop="16dp"
 android:layout_marginEnd="16dp"
 android:background="@color/colorAccent"
 ```
+
+***
 
 ### Summary of Adding Headers
 

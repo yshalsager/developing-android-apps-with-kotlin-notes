@@ -5,10 +5,10 @@
 > this super fun "[Guess it](https://github.com/udacity/andfun-kotlin-guess-it)" game.
 
 - Many Android teams will follow an application architecture, which is a great upon set of design rules.
-
 - Architecture provides the basic bones and structure of your app.
-
 - A well-thought-out architecture can make your code maintainable for years and help your team collaborate.
+
+***
 
 ### Tour of the App
 
@@ -27,6 +27,8 @@
   - `gameFinished()` - A method that is called to finish the game. This passes your current score to the ScoreFragment using SafeArgs.
 - [`ScoreFragment`](https://github.com/udacity/andfun-kotlin-guess-it/blob/starter-code/app/src/main/java/com/example/android/guesstheword/screens/score/ScoreFragment.kt) - This fragment gets the score passed in from the argument bundle and displays it. There’s also a button for playing again, that takes you back to the GameFragment.
 
+***
+
 ### What is Architecture
 
 - A bloated class that does all sorts of different functions is a bad idea.
@@ -44,6 +46,8 @@
 #### Separation of Concerns
 
 Divide your code into classes, each with separate, well-defined responsibilities.
+
+***
 
 ### Our App Architecture
 
@@ -83,6 +87,8 @@ In our case, the `UI Controllers` will be our three fragments. Let's take game f
 
 - The game `ViewModel` will hold data like the score value, the list of words, and the current word to be displayed because that's the data that is needed to know what to display on the screen. It'll also be in charge of simple calculations to decide the current state of the data. For example what the current word is in the list of words and what the current score should be.
 
+***
+
 ### ViewModel
 
 - `ViewModel` is an abstract class that you will extend and then implement. It holds your apps UI data and survives configuration changes.
@@ -94,6 +100,8 @@ In our case, the `UI Controllers` will be our three fragments. Let's take game f
 - If you reconnect your recreated fragment to the same `ViewModel` all of the data is just right there for you.
 
 - Unlike the `onSavedInstanceState` bundle the `ViewModel` has no restrictions on size so you can store lots of data in here without worrying
+
+***
 
 ### Adding A ViewModel
 
@@ -164,6 +172,8 @@ val viewModel: MyViewModel by navGraphViewModels(R.id.my_graph)
 2. Function Reference `list::isEmpty()`
 3. Property Reference `::someVal.isInitialized`
 4. Constructor Reference `::MyClass`
+
+***
 
 ### What should be moved to the ViewModel?
 
@@ -274,6 +284,8 @@ private fun updateScoreText() {
    
    Once you've copied over the variables and methods, remove any code that refers to the `GameFragment`. In the `GameViewModel`, comment out the reference to `gameFinished` in `nextWord`. You'll deal with this later. You can also clean up the log statements from the prior step.
 
+***
+
 ### The Benefits of a Good Architecture
 
 The separation of concerns design principle helps us in two ways:
@@ -294,6 +306,8 @@ Another aspect of this design is:
   
   By designing your app so that these Android classes aren't referenced in the `ViewModel` you can run pure lightweight unit tests that don't depend on the android framework code and therefore run faster and are easier to write.
 
+***
+
 ### The Power and Limits of the ViewModel
 
 By adding the `ViewModel` you've actually fixed the rotation issue. The `ViewModel` does preserve data with the configuration changes, but the data is still lost after the app is shut down by the OS.
@@ -303,6 +317,8 @@ The [proper way](https://developer.android.com/topic/libraries/architecture/savi
 The second issue is that we have related functions that should be combined in one file, but since we are separating the logic and UI controller it's okay to keep it like this.
 
 Both of these issues boil down to the fact that there's no way to communicate back to the fragment from the view. And since you should not have references to the fragment in your view we need another thing to deal with a situation like this.
+
+***
 
 ### [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
 
@@ -451,6 +467,8 @@ val score: LiveData<Int>
    
    In `GameViewModel`, update the code so that you use the mutable versions, `_score` and `_word`, throughout the view model.
 
+***
+
 ### Event vs. State
 
 `LiveData` keeps track of data **State**, like button color and score value. But Navigating to another screen is an example of an **Event**.
@@ -460,6 +478,8 @@ An **Event** happens once and it's done until it's triggered again. For example:
 - A notification
 - A sound playing when a button is pressed
 - Navigating to a different screen
+
+***
 
 ### LiveData And Events
 
@@ -527,6 +547,8 @@ viewModel.eventGameFinish.observe(viewLifecycleOwner, {isFinished ->
    }
 })
 ```
+
+***
 
 ### Adding a Timer
 
@@ -629,6 +651,8 @@ viewModel.currentTime.observe(viewLifecycleOwner, { newTime ->
 })
 ```
 
+***
+
 ### [ViewModelFactory](https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModelProvider.Factory.html)
 
 A class that knows how to create ViewModels.
@@ -640,11 +664,8 @@ There are two ways to do this. One is to make a setter for the score variable in
 ##### ViewModel: Adding a constructor
 
 - Create a `ViewModel` that takes in a constructor parameter
-
 - Make a `ViewModel` Factory for `ViewModel`
-
 - Have factory construct `ViewModel` with constructor parameter
-
 - Add `ViewModel` Factory when using `ViewModel` Providers
 
 #### Adding a ViewModelFactory
@@ -771,6 +792,8 @@ fun onPlayAgainComplete() {
 }
 ```
 
+***
+
 ### Adding ViewModel to Data Binding
 
 In this exercise, you're going to use data binding in the layout XML code to communicate directly with the `ViewModel`. In particular, we're going to tell the `ViewModel` when various buttons are clicked!
@@ -816,6 +839,8 @@ android:onClick="@{() -> gameViewModel.onSkip()}"
 
 Now instead of defining `OnClickListener` code in the fragment, you're using data binding. Run your app and see how all the buttons still work.
 
+***
+
 ### Adding LiveData Data Binding
 
 In this step, you'll use [LiveData to automagically update your layout via data binding](https://developer.android.com/topic/libraries/data-binding/architecture#livedata). This will allow you to remove all of your observation lambdas for simple UI updates.
@@ -860,6 +885,8 @@ android:text="@{@string/score_format(gameViewModel.score)}"
    
    Repeat steps 2 and 3 in the `ScoreFragment` code. Run your app again to make sure it compiles and runs.
 
+***
+
 ### LiveData Map Transformation
 
 One of the easiest ways to do simple data manipulations to `LiveData` such as changing an integer to a string is by using a method called `Transformation.map()`.
@@ -899,6 +926,8 @@ android:text="@{gameViewModel.currentTimeString}"
 3. Delete the observer for `currentTime` from GameFragment:
    
    We don't need it anymore! As always, run your code!
+
+***
 
 ### Optional Exercise: Adding the Buzzer
 

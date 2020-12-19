@@ -3,9 +3,7 @@
 > Understanding the concept of Lifecycles for both activities and fragments is what makes a great Android developer! Have a treat with this delicious "[Dessert Pusher](https://github.com/udacity/andfun-kotlin-dessert-pusher)" app.
 
 - Every activity and every fragment have what's known as a life cycle.
-
 - The activity life cycle is made up of the different states that the activity goes through from when it's first initialized to what it's finally destroyed.
-
 - They track things like whether the activity is on-screen or whether the user has navigated away from the activity entirely.
 
 ##### What is the use of the activity life cycle?
@@ -14,6 +12,8 @@
 
 - The Android OS is also watching the state of your activities to improve battery life and app performance the operating system will occasionally stop and restart apps behind the scenes, therefore you'll both want to program **proactively** and **defensively**. **Proactively** to clean up unused resources so activities on-screen run smoothly and **defensively** in case the OS does something like restart your app.
 
+***
+
 ### Introduction to Logging
 
 [Log](https://developer.android.com/reference/kotlin/android/util/Log.html) is an API for sending log output. Generally, you should use the `Log.v()`, `Log.d()`,` Log.i()`, `Log.w()`, and `Log.e()` methods to write logs. You can then view the logs in [logcat](https://developer.android.com/studio/debug/am-logcat).
@@ -21,15 +21,10 @@
 Logs have different levels that are used in different situations. The levels and their usages are listed below:
 
 - **Verbose**: Show all log messages (the default).
-
 - **Debug**: Show debug log messages that are useful during development only, as well as the message levels lower in this list.
-
 - **Info**: Show expected log messages for regular usage, as well as the message levels lower in this list.
-
 - **Warn**: Show possible issues that are not yet errors, as well as the message levels lower in this list.
-
 - **Error**: Show issues that have caused errors, as well as the message level lower in this list.
-
 - **Assert**: Show issues that the developer expects should never happen.
 
 The order in terms of verbosity, from least to most is ERROR, WARN, INFO, DEBUG, VERBOSE. Verbose should never be compiled into an application except during development. Debug logs are compiled in but stripped at runtime. Error, warning and info logs are always kept.
@@ -45,9 +40,7 @@ Log.i("MainActivity", "onCreate called")
 Timber is a logger library with a small, extensible API that provides utility on top of Android's normal `Log` class. The benefits of using it are:
 
 - Generate Tags. (so that you don't have to do it manually)
-
 - Avoid showing logs in the release version of your android app.
-
 - Allows for easy integration with crash reporting libraries.
 
 Timber needs to use an application class because the whole app will be using this logging library. Also, you want to initialize timber before anything else is initialized that includes all activities and fragments so in cases like this. What you're actually going to do is you're going to make a subclass of application and override the defaults with your own custom implementation.
@@ -86,43 +79,41 @@ android:name=".PusherApplication"
 Timber.plant(Timber.DebugTree())
 ```
 
+***
+
 ### Active Lifecycle Diagram
 
 - Open your activity and then navigate out of the activity by pressing the back button. Which callbacks are called and in what order?
-  
   `onCreate` -> `onStart` -> `onResume` -> `onPause` -> `onStop` -> `onDestroy`
 
 - Open the app, then press the home button and go to the home screen. Then navigate back to the activity. Starting from when you navigate to the home screen, Which callbacks are called and in what order?
-  
   `onPause` -> `onStop` -> `onRestart` -> `onStart` -> `onResume`
 
 - Open up the share dialog, then click outside of the share dialog to close it. Which callbacks are called in the activity and in what order?
-  
   `onPause` -> `onResume`
+
+***
 
 ### General Definitions
 
 - **Visible Lifecycle:** The part of the Lifecycle between `onStart` and `onStop` when the Activity is visible.
-
 - **Focus:** An Activity is said to have focus when it's the activity the user can interact with.
-
 - **Foreground:** When the activity is on screen.
-
 - **Background:** When the activity is fully off-screen, it is considered in the background.
+
+***
 
 ### Lifecycle States
 
 These are the same for both the Fragment Lifecycle and the Activity Lifecycle.
 
 - **Initialized:** This is the starting state whenever you make a new activity. This is a transient state -- it immediately goes to Created.
-
 - **Created:** Activity has just been created, but it’s not visible and it doesn’t have focus (you’re not able to interact with it).
-
 - **Started:** Activity is visible but doesn’t have focus.
-
 - **Resumed:** The state of the activity when it is running. It’s visible and has focus.
-
 - **Destroyed:** Activity is destroyed. It can be ejected from memory at any point and should not be referenced or interacted with.
+
+***
 
 ### Activity Lifecycle Callbacks
 
@@ -157,6 +148,8 @@ These are the same for both the Fragment Lifecycle and the Activity Lifecycle.
 **onDestroy:** This is the mirror method to `onCreate`. It is called once when the activity is fully destroyed. This happens when you navigate back out of the activity (as in press the back button), or manually call `finish()`. It is your last chance to clean up resources associated with the activity. Here you should:
 
 - Tear down or release any resources that are related to the activity and are not automatically released for you. Forgetting to do this could cause a memory leak! The logic that refers to the activity or attempts to update the UI after the activity has been destroyed could crash the app!
+
+***
 
 ### Summary of the Fragment Lifecycle
 
@@ -212,6 +205,8 @@ What you’ve seen up to this point are the Activity Lifecycle and the Fragment 
 - [**The Android Lifecycle cheat sheet — part II: Multiple Activities**](https://medium.com/androiddevelopers/the-android-lifecycle-cheat-sheet-part-ii-multiple-activities-a411fd139f24) - This shows the order of lifecycle calls when two activities interact.
 - [**The Android Lifecycle cheat sheet — part III: Fragments**](https://medium.com/androiddevelopers/the-android-lifecycle-cheat-sheet-part-iii-fragments-afc87d4f37fd) - This shows the order of lifecycle calls when activity and fragment interact.
 
+***
+
 ### Introduction to the [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle) Library
 
 - When you set up a lot of things in `onStart` or `onCreate` and then tear down all those things in `onStop` or `onDestroy`. For example, maybe you have animations and music and sensors and timers that you need to set up and tear down. If you forgot a one that leads to bugs and headaches.
@@ -266,6 +261,8 @@ fun startTimer() {...}
 @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
 fun stopTimer() {...}
 ```
+
+***
 
 ### Process Shutdown
 
@@ -402,6 +399,8 @@ outState.putSerializable(KEY_BOARD, playBoard)
 playBoard = savedInstanceState.getSerializable(KEY_BOARD) as ArrayList<String>
 ```
 
+***
+
 ### Configuration Changes
 
 - Rotate your phone and record the callbacks triggered:
@@ -411,12 +410,9 @@ playBoard = savedInstanceState.getSerializable(KEY_BOARD) as ArrayList<String>
 - A configuration change is where the state of the device changes so radically that the system decides the easiest way to resolve this is to rebuild the activity. It uses the same `onSaveInstanceState` bundle to restore the activity which is why implementing `onSaveInstanceState` fixed that rotation problem.
 
 - Examples of configuration changes include:
-  
-  - User changed device language.
-  
-  - User plugs in or removes a hardware keyboard.
-  
-  - User rotates device.
+    * User changed device language.
+    * User plugs in or removes a hardware keyboard.
+    * User rotates device.
 
 - Android is flexible enough that when you choose to rotate your phone you could show the user a completely different UI with a completely different view hierarchy thus if you start off in portrait orientation and then rotate your phone the device actually tears down any activities in portrait orientation and recreates them in landscape orientation.
 
