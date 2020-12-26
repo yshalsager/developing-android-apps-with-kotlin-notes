@@ -252,34 +252,6 @@ The style has a parent, just as a theme can have a parent. But this time, instea
 
 ***
 
-#### Styles and Themes Summary
-
-* Use themes, styles, and attributes on views to change the appearance of views.
-* Themes affect the styling of your whole app and come with many preset values for colors, fonts, and font sizes.
-* An attribute applies to the view in which the attribute is set. Use attributes if you have styling that applies to only one view, such as padding, margins, and constraints.
-* Styles are groups of attributes that can be used by multiple views. For example, you can have a style for all your content headers, buttons, or text views.
-* Themes and styles inherit from their parent theme or style. You can create a hierarchy of styles.
-* Attribute values (which are set in views) override styles. Styles override the default style. Styles override themes. Themes override any styling set by the `textAppearance` property.
-
-![](https://developer.android.com/codelabs/kotlin-android-training-styles-and-themes/img/e7851427054b568d.png)
-
-* Define styles in the `styles.xml` resource file using the `<style>` and `<item>` tags.
-
-```xml
-<style name="TextAppearance.Subtitle" parent="TextAppearance.Title" >
-   <item name="android:textSize">18sp</item>
-</style>
-```
-Using downloadable fonts makes fonts available to users without increasing the size of your APK. To add a downloadable font for a view:
-
-1. Select the view in the **Design** tab, and select **More fonts** from the drop-down menu of the `fontFamily` attribute.
-2. In the **Resources** dialog, find a font and select the **Create downloadable font** radio button.
-3. Verify that the Android manifest includes a meta-data tag for preloaded fonts.
-
-When the app first requests a font, and the font is not already available, the font provider downloads it from the internet.
-
-***
-
 ### [Material Design](https://developer.android.com/guide/topics/ui/look-and-feel)
 
 Material Design is a cross-platform design system from Google, and is the design system for Android. Material Design provides detailed specs for everything in an app's user interface (UI), from how text should be shown, to how to lay out a screen. The Material Design website at [material.io](https://material.io/) has the complete specifications.
@@ -705,51 +677,6 @@ Note that this color scheme still has some accessibility warnings. Most color sc
 * `colorOnPrimary`: A color that passes accessibility guidelines for text and iconography when drawn on top of the primary color.
 * `colorOnSecondary`: A color that passes accessibility guidelines for text and iconography when drawn on top of the secondary color.
 * For more information, see [Color Theming](https://material.io/develop/android/theming/color/).
-
-***
-
-### Material Design, dimens, and colors summary
-
-**Floating action buttons**
-
-* The floating action button (FAB) floats above all other views. It is usually associated with a primary action the user can take on the screen. You add a click listener to a FAB in the same way as to any other UI element.
-* To add a FAB to your layout, use a `CoordinatorLayout` as the top-level view group, then add the FAB to it.
-* To scroll content inside a `CoordinatorLayout`, use the `androidx.core.widget.NestedScrollView.`
-
-**Material Design**
-
-* Material Design provides themes and styles that make your app beautiful and easier to use. Material Design provides detailed specs for everything, from how text should be shown, to how to lay out a screen. See [material.io](https://material.io/) for the complete specifications.
-* To use Material components, you need to include the Material library in your gradle file. Make sure to use the latest library version.
-
-```kotlin
-implementation 'com.google.android.material:material:1.2.0'
-```
-
-* Use `?attr` to apply material theme attributes to a view: `style="?attr/textAppearanceHeadline5"`
-
-**Themes and styles**
-
-* Use styles to override theme attributes.
-* Use theme overlays to apply a theme to just a view and its children. Apply the theme to the parent view. For example:
-
-```xml
-android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-```
-
-Then use the `?attr` notation to apply attributes to a view. For example:
-
-```xml
-android:background="?attr/colorPrimaryDark"
-```
-
-**Colors**
-
-* The [Color Tool](https://material.io/tools/color) helps you create a Material palette for your app and download the palette as a `color.xml` file.
-* Setting a tint on the `ImageView` causes the `ImageView` to be "tinted" to the specified color. For example, you might use `android:tint="?attr/colorOnPrimary"`. The `colorOnPrimary` color is designed to look good on `colorPrimary`.
-
-**Dimensions**
-
-* Use dimension for measurements that apply to your whole app, such as margins, guidelines, or spacing between elements.
 
 ***
 
@@ -1381,7 +1308,78 @@ To customize the dark theme, create folders with the `-night` qualifier for the 
 
 ***
 
-### Design for everyone summary
+### Summary
+
+#### Styles and Themes
+
+* Use themes, styles, and attributes on views to change the appearance of views.
+* Themes affect the styling of your whole app and come with many preset values for colors, fonts, and font sizes.
+* An attribute applies to the view in which the attribute is set. Use attributes if you have styling that applies to only one view, such as padding, margins, and constraints.
+* Styles are groups of attributes that can be used by multiple views. For example, you can have a style for all your content headers, buttons, or text views.
+* Themes and styles inherit from their parent theme or style. You can create a hierarchy of styles.
+* Attribute values (which are set in views) override styles. Styles override the default style. Styles override themes. Themes override any styling set by the `textAppearance` property.
+
+![](https://developer.android.com/codelabs/kotlin-android-training-styles-and-themes/img/e7851427054b568d.png)
+
+* Define styles in the `styles.xml` resource file using the `<style>` and `<item>` tags.
+
+```xml
+<style name="TextAppearance.Subtitle" parent="TextAppearance.Title" >
+   <item name="android:textSize">18sp</item>
+</style>
+```
+Using downloadable fonts makes fonts available to users without increasing the size of your APK. To add a downloadable font for a view:
+
+1. Select the view in the **Design** tab, and select **More fonts** from the drop-down menu of the `fontFamily` attribute.
+2. In the **Resources** dialog, find a font and select the **Create downloadable font** radio button.
+3. Verify that the Android manifest includes a meta-data tag for preloaded fonts.
+
+When the app first requests a font, and the font is not already available, the font provider downloads it from the internet.
+
+#### Material Design, dimens, and colors
+
+**Floating action buttons**
+
+* The floating action button (FAB) floats above all other views. It is usually associated with a primary action the user can take on the screen. You add a click listener to a FAB in the same way as to any other UI element.
+* To add a FAB to your layout, use a `CoordinatorLayout` as the top-level view group, then add the FAB to it.
+* To scroll content inside a `CoordinatorLayout`, use the `androidx.core.widget.NestedScrollView.`
+
+**Material Design**
+
+* Material Design provides themes and styles that make your app beautiful and easier to use. Material Design provides detailed specs for everything, from how text should be shown, to how to lay out a screen. See [material.io](https://material.io/) for the complete specifications.
+* To use Material components, you need to include the Material library in your gradle file. Make sure to use the latest library version.
+
+```kotlin
+implementation 'com.google.android.material:material:1.2.0'
+```
+
+* Use `?attr` to apply material theme attributes to a view: `style="?attr/textAppearanceHeadline5"`
+
+**Themes and styles**
+
+* Use styles to override theme attributes.
+* Use theme overlays to apply a theme to just a view and its children. Apply the theme to the parent view. For example:
+
+```xml
+android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+```
+
+Then use the `?attr` notation to apply attributes to a view. For example:
+
+```xml
+android:background="?attr/colorPrimaryDark"
+```
+
+**Colors**
+
+* The [Color Tool](https://material.io/tools/color) helps you create a Material palette for your app and download the palette as a `color.xml` file.
+* Setting a tint on the `ImageView` causes the `ImageView` to be "tinted" to the specified color. For example, you might use `android:tint="?attr/colorOnPrimary"`. The `colorOnPrimary` color is designed to look good on `colorPrimary`.
+
+**Dimensions**
+
+* Use dimension for measurements that apply to your whole app, such as margins, guidelines, or spacing between elements.
+
+#### Design for everyone
 
 **Support RTL Languages**
 

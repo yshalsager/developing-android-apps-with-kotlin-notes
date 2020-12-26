@@ -419,3 +419,36 @@ playBoard = savedInstanceState.getSerializable(KEY_BOARD) as ArrayList<String>
 - What happens to an activity if you override `onSaveInstanceState` and save some of your data, but don't call the super method? When the activity restarts after a configuration change, it could be missing some data, such as the edit text data.
 
 - `onSaveInstanceState` automatically saves some data for you, such as EditTexts (as long as they have an id). But if you remove the call to the super method, the superclass won't be able to automatically do this for you. Always remember to call `super.onSaveInstanceState(outState)` when overriding `onSaveInstanceState`!
+
+***
+
+### Summary
+
+**Activity lifecycle**
+
+* The _activity lifecycle_ is a set of states through which an activity migrates. The activity lifecycle begins when the activity is first created and ends when the activity is destroyed.
+* As the user navigates between activities and inside and outside of your app, each activity moves between states in the activity lifecycle.
+* Each state in the activity lifecycle has a corresponding callback method you can override in your `Activity` class. There are seven lifecycle methods: [`onCreate()`](https://developer.android.com/reference/android/app/Activity.html#onCreate%28android.os.Bundle%29)[`onStart()`](https://developer.android.com/reference/android/app/Activity.html#onStart%28%29)[`onPause()`](https://developer.android.com/reference/android/app/Activity.html#onPause%28%29)[`onRestart()`](https://developer.android.com/reference/android/app/Activity.html#onRestart%28%29)[`onResume()`](https://developer.android.com/reference/android/app/Activity.html#onResume%28%29)[`onStop()`](https://developer.android.com/reference/android/app/Activity.html#onStop%28%29)[`onDestroy()`](https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29)
+* To add behavior that occurs when your activity transitions into a lifecycle state, override that state's callback method.
+* To add skeleton override methods to your classes in Android Studio, select **Code > Override Methods** or press `Control+o`.
+
+**Logging with Log**
+
+* The Android logging API, and specifically the `Log` class, enables you to write short messages that are displayed in the Logcat within Android Studio.
+* Use `Log.i()` to write an informational message. This method takes two arguments: the log _tag_, typically the name of the class, and the log _message_, a short string.
+* Use the **Logcat** pane in Android Studio to view the system logs, including the messages you write.
+
+**Logging with Timber**
+
+[`Timber`](https://github.com/JakeWharton/timber) is a logging library with several advantages over the Android logging API. In particular, the `Timber` library:
+
+* Generates the log tag for you based on the class name.
+* Helps avoid showing logs in a release version of your Android app.
+* Allows for integration with crash reporting libraries.
+
+To use `Timber`, add its dependency to your Gradle file and extend the [`Application`](https://developer.android.com/reference/android/app/Application) class to initialize it:
+
+* `Application` is a base class that contains global application state for your entire app. There is a default `Application` class that is used by Android if you don't specify one. You can create your own `Application` subclass to initialize app-wide libraries such as `Timber`.
+* Add your custom `Application` class to your app by adding the `android:name` attribute to the `<application>` element in the Android manifest. Do not forget to do this!
+* Use `Timber.i()` to write log messages with `Timber`. This method only takes one argument: the message to write. The log tag (the name of the class) is added for you automatically.
+

@@ -669,3 +669,219 @@ Alpha describes how transparent something is. At 0% alpha the view would be invi
 Our first action connects the `TitleFragment` to the `GameFragment`. We’ll have it slide in from the left and out to the right when entering and exiting, and have it slide in from the right and out to the left when pop entering and pop exiting. Edit them from Design editor.
 
 Repeat the same set of animations for the game fragment to the game won fragment, from the `gameWonFragment` to the `gameFragment`, and from the `gameOverFragment` to the `gameFragment`. For the transition to the `gameOverFragment`, we’ll fade in and out instead.
+
+***
+
+### Summary
+
+#### Create a fragment
+
+* A _Fragment_ is a modular section of an activity.
+* A Fragment has its own lifecycle and receives its own input events.
+* Use the `<fragment>` tag to define the layout for the Fragment in the XML layout file.
+* Inflate the layout for a Fragment in `onCreateView()`.
+* You can add or remove a Fragment while the activity is running.
+
+#### Define navigation paths
+
+**Navigation components**
+
+To use the Android _navigation library_, you need to do some setup:
+
+* Add dependencies for `navigation-fragment-ktx` and `navigation-ui-ktx` in the module-level `build.gradle` file.
+* Add an `ext` variable for the `navigationVersion` in the project-level `build.gradle` file.
+
+_Navigation destinations_ are fragments, activities, or other app components that the user navigates to. A _navigation graph_ defines the possible paths from one navigation destination to the next.
+
+* To create a navigation graph, create a new Android resource file of type **Navigation**. This file defines the navigation flow through the app. The file is in the `res/navigation` folder, and it's typically called `navigation.xml`.
+* To see the navigation graph in the Navigation Editor, open the `navigation.xml` file and click the **Design** tab.
+* Use the Navigation Editor to add destinations such as fragments to the navigation graph.
+* To define the path from one destination to another, use the Navigation Graph to create an action that connects the destinations. In the `navigation.xml` file, each of these connections is represented as an `action` that has an `ID`.
+
+A _navigation host Fragment_, usually named `NavHostFragment`, acts as a host for the fragments in the navigation graph:
+
+* As the user moves between destinations defined in the navigation graph, the `NavHostFragment` swaps the fragments in and out and manages the Fragment back stack.
+* In the `activity_main.xml` layout file, the `NavHostFragment` is represented by a `fragment` element with the name `android:name="androidx.navigation.fragment.NavHostFragment"`.
+
+To define which Fragment is displayed when the user taps a view (for example a button), set the `onClick` listener for the view:
+
+* In the `onClick` listener, call `findNavController().navigate()` on the view.
+* Specify the `ID` of the `action` that leads to the destination.
+
+_Conditional navigation_ navigates to one screen in one case, and to a different screen in another case. To create conditional navigation:
+
+1. Use the Navigation Editor to create a connection from the starting Fragment to each of the possible destination fragments.
+2. Give each connection a unique ID.
+3. In the click-listener method for the `View`, add code to detect the conditions. Then call `findNavController().navigate()` on the view, passing in the ID for the appropriate action.
+
+**The Back button**
+
+The system's _Back button_ is usually at the bottom of the device. By default, the Back button navigates the user back to the screen they viewed most recently. In some situations, you can control where the Back button takes the user:
+
+* In the Navigation Editor, you can use the **Attributes** pane to change an action's **popUpTo** setting. This setting removes destinations from the back stack, which has the effect of determining where the Back button takes the user.
+* The **popUpTo** setting appears as the `popUpTo` attribute in the `navigation.xml` file.
+
+![1f8e86b02d795270.png](https://developer.android.com/codelabs/kotlin-android-training-add-navigation/img/1f8e86b02d795270.png)
+
+* Selecting the **popUpToInclusive** checkbox sets the `popUpToInclusive` attribute to `true`. All destinations up to and _including_ this destination are removed from the back stack.
+* If an action's `popUpTo` attribute is set to the app's starting destination and `popUpToInclusive` is set to `true`, the Back button takes the user all the way out of the app.
+
+**The Up button**
+
+Screens in an Android app can have an on-screen _Up button_ that appears at the top left of the [_app bar_](https://developer.android.com/topic/libraries/architecture/navigation/navigation-ui#top_app_bar). (The app bar is sometimes called the _action bar._) The Up button navigates "upwards" within the app's screens, based on the hierarchical relationships between screens.
+
+The navigation controller's [`NavigationUI`](https://developer.android.com/topic/libraries/architecture/navigation/navigation-ui) library integrates with the app bar to allow the user to tap the Up button on the app bar to get back to the app's home screen from anywhere in the app.
+
+To link the navigation controller to the app bar:
+
+1. In `onCreate()`, call `setupActionBarWithNavController()` on the `NavigationUI` class, passing in the navigation controller:
+
+```kotlin
+val navController = this.findNavController(R.id.myNavHostFragment)
+NavigationUI.setupActionBarWithNavController(this,navController)
+```
+
+2.  Override the `onSupportNavigateUp()` method to call `navigateUp()` in the navigation controller:
+
+```kotlin
+override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        return navController.navigateUp()
+    }
+}
+```
+
+**The options menu**
+
+The _options menu_ is a menu that the user accesses from the app bar by tapping the icon with the three vertical dots ![4cdd17fa43bfbe6.png](https://developer.android.com/codelabs/kotlin-android-training-add-navigation/img/4cdd17fa43bfbe6.png). To create an options menu with a menu item that displays a Fragment, make sure the Fragment has an ID. Then define the options menu and code the `onOptionsItemSelected()` handler for the menu items.
+
+1. Make sure the Fragment has an ID:
+
+* Add the destination Fragment to the navigation graph and note the ID of the Fragment. (You can change the ID if you like.)
+
+2. Define the options menu:
+
+* Create an Android resource file of type **Menu**, typically named `options_menu.xml`. The file is stored in the **Res > Menu** folder.
+* Open the `options_menu.xml` file in the design editor and drag a **Menu Item** widget from the **Palette** pane to the menu.
+* For convenience, make the ID of the menu item the same as the ID of the Fragment to display when the user clicks this menu item. This step is not required, but it makes it easier to code the `onClick` behavior for the menu item.
+
+3. Code the `onClick` handler for the menu item:
+
+* In the Fragment or Activity that displays the options menu, in `onCreateView()`, call `setHasOptionsMenu(true)` to enable the options menu.
+* Implement `onCreateOptionsMenu()` to inflate the options menu:
+
+```kotlin
+override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.options_menu, menu)
+}
+```
+
+* Override the `onOptionsItemSelected()` method to take the appropriate action when the menu item is clicked. The following code displays the Fragment that has the same ID as the menu item. (This code only works if the menu item and the Fragment have identical ID values.)
+
+```kotlin
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+     return NavigationUI.
+            onNavDestinationSelected(item,requireView().findNavController())
+            || super.onOptionsItemSelected(item)
+}
+```
+
+**The navigation drawer**
+
+The _navigation drawer_ is a panel that slides out from the edge of the screen. There are two ways for the user to open the navigation drawer:
+
+* Swipe from the starting edge (usually the left) on any screen.
+* Use the drawer button (three lines) ![7277f85db3a1ad13.png](https://developer.android.com/codelabs/kotlin-android-training-add-navigation/img/7277f85db3a1ad13.png) on the app bar at the top of the app.
+
+To add a navigation drawer to your app:
+
+1. Add dependencies to `build.gradle (app)`.
+2. Make sure each destination Fragment has an ID.
+3. Create the menu for the drawer.
+4. Add the drawer to the layout for the Fragment.
+5. Connect the drawer to the navigation controller.
+6. Set up the drawer button in the app bar.
+
+These steps are explained in more detail below.
+
+1. Add dependencies to `build.gradle`:
+
+* The navigation drawer is part of the Material Components for Android library. Add the Material library to the `build.gradle (app)` file:
+
+```groovy
+dependencies {
+    ...
+    implementation "com.google.android.material:material:$supportlibVersion"
+    ...
+}
+```
+
+2. Give each destination Fragment an ID:
+
+* If a Fragment is reachable from the navigation drawer, open it in the navigation graph to make sure that it has an ID.
+
+3. Create the menu for the drawer:
+
+* Create an Android resource file of type **Menu** (typically called `navdrawer_menu`) for a navigation drawer menu. This creates a new `navdrawer_menu.xml` file in the `Res > Menu` folder.
+* In the design editor, add **Menu Item** widgets to the **Menu**.
+
+4. Add the drawer to the layout for the Fragment:
+
+* In the layout that contains the navigation host Fragment (which is typically the main layout), use `<androidx.drawerlayout.widget.DrawerLayout>` as the root view.
+* Add a `<com.google.android.material.navigation.NavigationView>` view to the layout.
+
+5. Connect the drawer to the navigation controller:
+
+* Open the Activity that creates the navigation controller. (The main Activity is typically the one you want here.) In `onCreate()`, use `NavigationUI.setupWithNavController()`to connect the navigation drawer with the navigation controller:
+
+```kotlin
+val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
+       this, R.layout.activity_main)
+NavigationUI.setupWithNavController(binding.navView, navController)
+```
+
+6. Set up the drawer button in the app bar:
+
+* In `onCreate()` in the Activity that creates the navigation controller (which is typically the main Activity), pass the drawer layout as the third parameter to `NavigationUI.setupActionBarWithNavController`:
+
+```kotlin
+val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
+    this, R.layout.activity_main)
+
+NavigationUI.setupActionBarWithNavController(
+    this, navController, binding.drawerLayout)
+```
+
+* To make the Up button work with the drawer button, edit `onSupportNavigateUp()` to return `NavigationUI.navigateUp()`. Pass the navigation controller and the drawer layout to `navigateUp()`.
+
+```kotlin
+override fun onSupportNavigateUp(): Boolean {
+   val navController = this.findNavController(R.id.myNavHostFragment)
+   return NavigationUI.navigateUp(navController, drawerLayout)
+}
+```
+
+### Start an external Activity
+
+**Safe Args:**
+
+* To help catch errors caused by missing keys or mismatched types when you pass data from one Fragment to another, use a Gradle plugin called [_Safe Args_](https://developer.android.com/topic/libraries/architecture/navigation/navigation-pass-data#Safe-args).
+* For each Fragment in your app, the Safe Args plugin generates a corresponding `NavDirection` class. You add the `NavDirection` class to the Fragment code, then use the class to pass arguments between the Fragment and other fragments.
+* The `NavDirection` classes represent navigation from all the app's actions.
+
+**Implicit intents:**
+
+* An [_implicit intent_](https://developer.android.com/training/basics/intents/sending) declares an action that your app wants some other app (such as a camera app or email app) to perform on its behalf.
+* If several Android apps could handle an implicit intent, Android shows the user a chooser. For example, when the user taps the **share** icon in the AndroidTrivia app, the user can select which app they want to use to share their game results.
+* To build an intent, you declare an action to perform, for example [`ACTION_SEND`](https://developer.android.com/reference/android/content/Intent.html#ACTION_SEND).
+* Several [`Intent()`](https://developer.android.com/reference/android/content/Intent.html#public-constructors_1) constructors are available to help you build intents.
+
+**Sharing functionality:**
+
+* In the case of sharing your success with your friends, the `Intent` action would be `Intent.ACTION_SEND.`
+* To add an options menu to a Fragment, set the [`setHasOptionsMenu()`](https://developer.android.com/reference/android/support/v4/app/Fragment#sethasoptionsmenu) method to `true` in the Fragment code.
+* In the Fragment code, override the `onCreateOptionsMenu()` method to inflate the menu.
+* Override the `onOptionsItemSelected()` to use `startActivity()` to send the `Intent` to other apps that can handle it.
+
+When the user taps the menu item, the intent is fired, and the user sees a chooser for the `SEND` action.

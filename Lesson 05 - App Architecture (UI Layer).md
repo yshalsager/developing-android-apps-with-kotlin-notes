@@ -1054,3 +1054,155 @@ viewModel.eventBuzz.observe(viewLifecycleOwner, { buzzType ->
 
 ##### Extra: How to force reload the layout?
 You can force reload the layout by calling `binding.invalidateAll()`.
+
+***
+
+### Summary
+
+* The Android [app architecture](https://developer.android.com/jetpack/docs/guide) guidelines recommend separating classes that have different responsibilities.
+* A _UI controller_ is UI-based class like [`Activity`](https://developer.android.com/reference/android/app/Activity.html) or [`Fragment`](https://developer.android.com/reference/android/app/Fragment.html). UI controllers should only contain logic that handles UI and operating system interactions; they shouldn't contain data to be displayed in the UI. Put that data in a `ViewModel`.
+* The [`ViewModel`](https://developer.android.com/reference/android/arch/lifecycle/ViewModel.html) class stores and manages UI-related data. The `ViewModel` class allows data to survive configuration changes such as screen rotations.
+* `ViewModel` is one of the recommended [Android Architecture Components](https://developer.android.com/jetpack/#architecture-components).
+* `ViewModelProvider.Factory` is an interface you can use to create a `ViewModel` object.
+
+The table below compares UI controllers with the `ViewModel` instances that hold data for them:
+
+|     |     |
+| --- | --- |
+| **UI controller** | **ViewModel** |
+| An example of a UI controller is the `ScoreFragment` that you created in this codelab. | An example of a `ViewModel` is the `ScoreViewModel` that you created in this lesson. |
+| Doesn't contain any data to be displayed in the UI. | Contains data that the UI controller displays in the UI. |
+| Contains code for displaying data, and user-event code such as click listeners. | Contains code for data processing. |
+| Destroyed and re-created during every configuration change. | Destroyed only when the associated UI controller goes away permanently—for an activity, when the activity finishes, or for a fragment, when the fragment is detached. |
+| Contains views. | Should never contain references to activities, fragments, or views, because they don't survive configuration changes, but the `ViewModel` does. |
+| Contains a reference to the associated `ViewModel`. | Doesn't contain any reference to the associated UI controller. |
+
+#### LiveData
+
+* [`LiveData`](https://developer.android.com/topic/libraries/architecture/livedata) is an observable data holder class that is lifecycle-aware, one of the [Android Architecture Components](https://developer.android.com/topic/libraries/architecture).
+* You can use `LiveData` to enable your UI to update automatically when the data updates.
+* `LiveData` is observable, which means that an observer like an activity or an fragment can be notified when the data held by the `LiveData` object changes.
+* `LiveData` holds data; it is a wrapper that can be used with any data.
+* `LiveData` is lifecycle-aware, meaning that it only updates observers that are in an active lifecycle state such as [`STARTED`](https://developer.android.com/reference/android/arch/lifecycle/Lifecycle.State.html#STARTED) or [`RESUMED`](https://developer.android.com/reference/android/arch/lifecycle/Lifecycle.State.html#RESUMED).
+
+##### To add LiveData
+
+* Change the type of the data variables in `ViewModel` to `LiveData` or [`MutableLiveData`](https://developer.android.com/reference/android/arch/lifecycle/MutableLiveData).
+
+`MutableLiveData` is a `LiveData` object whose value can be changed. `MutableLiveData` is a generic class, so you need to specify the type of data that it holds.
+
+* To change the value of the data held by the `LiveData`, use the `setValue()` method on the `LiveData` variable.
+
+##### To encapsulate LiveData
+
+* The `LiveData` inside the `ViewModel` should be editable. Outside the `ViewModel`, the `LiveData` should be readable. This can be implemented using a Kotlin [backing property](https://kotlinlang.org/docs/reference/properties.html#backing-properties).
+* A Kotlin backing property allows you to return something from a getter other than the exact object.
+* To encapsulate the `LiveData`, use `private` `MutableLiveData` inside the `ViewModel` and return a `LiveData` backing property outside the `ViewModel`.
+
+##### Observable LiveData
+
+* `LiveData` follows an observer pattern. The "observable" is the `LiveData` object, and the observers are the methods in the UI controllers, like fragments. Whenever the data wrapped inside `LiveData` changes, the observer methods in the UI controllers are notified.
+* To make the `LiveData` observable, attach an observer object to the `LiveData` reference in the observers (such as activities and fragments) using the [`observe()`](https://developer.android.com/reference/android/arch/lifecycle/LiveData.html#observe%28android.arch.lifecycle.LifecycleOwner,%0Aandroid.arch.lifecycle.Observer%3CT%3E%29) method.
+* This `LiveData` observer pattern can be used to communicate from the `ViewModel` to the UI controllers.
+
+#### Data binding with ViewModel and LiveData
+
+* The Data Binding Library works seamlessly with Android Architecture Components like `ViewModel` and `LiveData`.
+* The layouts in your app can bind to the data in the Architecture Components, which already help you manage the UI controller's lifecycle and notify about changes in the data.
+
+##### ViewModel data binding
+
+* You can associate a [`ViewModel`](https://developer.android.com/reference/android/arch/lifecycle/ViewModel) with a layout by using data binding.
+* `ViewModel` objects hold the UI data. By passing `ViewModel` objects into the data binding, you can automate some of the communication between the views and the `ViewModel` objects.
+
+How to associate a `ViewModel` with a layout:
+
+* In the layout file, add a data-binding variable of the type `ViewModel`.
+
+```xml
+<data>
+   <variable
+       name="gameViewModel"
+       type="com.example.android.guesstheword.screens.game.GameViewModel" />
+</data>
+```
+
+* In the `GameFragment` file, pass the `GameViewModel` into the data binding.  
+    
+```kotlin
+binding.gameViewModel = viewModel
+```
+
+##### Listener bindings
+
+* [_Listener bindings_](https://developer.android.com/topic/libraries/data-binding/expressions#listener_bindings) are binding expressions in the layout that run when click events such as `onClick()` are triggered.
+* Listener bindings are written as lambda expressions.
+* Using listener bindings, you replace the click listeners in the UI controllers with listener bindings in the layout file.
+* Data binding creates a listener and sets the listener on the view.
+
+```xml
+android:onClick="@{() -> gameViewModel.onSkip()}"
+```
+
+#### Adding LiveData to data binding
+
+* [`LiveData`](https://developer.android.com/reference/android/arch/lifecycle/LiveData) objects can be used as a data-binding source to automatically notify the UI about changes in the data.
+* You can bind the view directly to the `LiveData` object in the `ViewModel`. When the `LiveData` in the `ViewModel` changes, the views in the layout can be automatically updated, without the observer methods in the UI controllers.
+
+```xml
+android:text="@{gameViewModel.word}"
+```
+
+* To make the `LiveData` data binding work, set the current activity (the UI controller) as the lifecycle owner of the `binding` variable in the UI controller.
+
+```kotlin
+binding.lifecycleOwner = this
+```
+
+#### String formatting with data binding
+
+* Using data binding, you can format a string resource with placeholders like `%s` for strings and `%d` for integers.
+* To update the `text` attribute of the view, pass in the `LiveData` object as an argument to the formatting string.
+
+```xml
+android:text="@{@string/quote_format(gameViewModel.word)}"
+```
+
+#### LiveData transformations
+
+**Transforming LiveData**
+
+* Sometimes you want to transform the results of `LiveData`. For example, you might want to format a `Date` string as "hours:mins:seconds," or return the number of items in a list rather than returning the list itself. To perform transformations on `LiveData`, use helper methods in the [`Transformations`](https://developer.android.com/reference/androidx/lifecycle/Transformations.html) class.
+* The [`Transformations.map()`](https://developer.android.com/reference/androidx/lifecycle/Transformations.html#map%28androidx.lifecycle.LiveData%3CX%3E,%20androidx.arch.core.util.Function%3CX,%20Y%3E%29) method provides an easy way to perform data manipulations on the `LiveData` and return another `LiveData` object. The recommended practice is to put data-formatting logic that uses the `Transformations` class in the `ViewModel` along with the UI data.
+
+**Displaying the result of a transformation in a** `TextView`
+
+* Make sure the source data is defined as `LiveData` in the `ViewModel`.
+* Define a variable, for example `newResult`. Use `Transformation.map()` to perform the transformation and return the result to the variable.
+
+```kotlin
+val newResult = Transformations.map(someLiveData) { input ->
+   // Do some transformation on the input live data
+   // and return the new value
+}
+```
+
+* Make sure the layout file that contains the `TextView` declares a `<data>` variable for the `ViewModel`.
+
+```xml
+<data>
+   <variable
+       name="MyViewModel"
+       type="com.example.android.something.MyViewModel" />
+</data>
+```
+
+* In the layout file, set the `text` attribute of the `TextView` to the binding of the `newResult` of the `ViewModel`. For example:
+
+```xml
+android:text="@{SomeViewModel.newResult}"
+```
+
+**Formatting dates**
+
+* The [`DateUtils.formatElapsedTime()`](https://developer.android.com/reference/android/text/format/DateUtils.html#formatElapsedTime%28long%29) utility method takes a `long` number of milliseconds and formats the number to use a `MM:SS` string format.

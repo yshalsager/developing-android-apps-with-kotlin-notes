@@ -1615,3 +1615,154 @@ These are the major steps for adding a header:
 * Update `SleepNightDiffCallback` to work with the `DataItem` class.
 * Create a `addHeaderAndSubmitList()` function that uses coroutines to add the header to the dataset and then calls `submitList()`.
 * Implement `GridLayoutManager.SpanSizeLookup()` to make only the header three spans wide.
+
+***
+
+### Summary
+
+#### RecyclerView fundamentals
+
+* Displaying a list or grid of data is one of the most common UI tasks in Android. `RecyclerView` is designed to be efficient even when displaying extremely large lists.
+* `RecyclerView` does only the work necessary to process or draw items that are currently visible on the screen.
+* When an item scrolls off the screen, its views are recycled. That means the item is filled with new content that scrolls onto the screen.
+* The [adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern) in software engineering helps an object work together with another API. `RecyclerView` uses an adapter to transform app data into something it can display, without the need for changing how the app stores and processes data.
+
+To display your data in a `RecyclerView`, you need the following parts:
+
+**RecyclerView**
+
+* To create an instance of [`RecyclerView`](https://developer.android.com/reference/kotlin/androidx/recyclerview/widget/RecyclerView), define a `<RecyclerView>` element in the layout file.
+
+**LayoutManager**
+
+A `RecyclerView` uses a `LayoutManager` to organize the layout of the items in the `RecyclerView`, such as laying them out in a grid or in a linear list.  
+      
+In the `<RecyclerView>` in the layout file, set the `app:layoutManager` attribute to the layout manager (such as `LinearLayoutManager` or `GridLayoutManager`).  
+      
+You can also set the `LayoutManager` for a `RecyclerView` programmatically. (This technique is covered in a later codelab.)  
+    
+**Layout for each item **
+
+Create a layout for one item of data in an XML layout file.
+
+**Adapter**
+
+Create an adapter that prepares the data and how it will be displayed in a `ViewHolder`. Associate the adapter with the `RecyclerView`.  
+
+When `RecyclerView` runs, it will use the adapter to figure out how to display the data on the screen.  
+
+The adapter requires you to implement the following methods:  
+– `getItemCount()` to return the number of items.  
+– `onCreateViewHolder()` to return the `ViewHolder` for an item in the list.  
+– `onBindViewHolder()` to adapt the data to the views for an item in the list.  
+
+**ViewHolder**
+
+A `ViewHolder` contains the view information for displaying one item from the item's layout.
+* The `onBindViewHolder()` method in the adapter adapts the data to the views. You always override this method. Typically, `onBindViewHolder()` inflates the layout for an item, and puts the data in the views in the layout.
+* Because the `RecyclerView` knows nothing about the data, the `Adapter` needs to inform the `RecyclerView` when that data changes. Use `notifyDataSetChanged()`to notify the `Adapter` that the data has changed.
+
+#### DiffUtil and data binding with RecyclerView
+
+**DiffUtil**:
+
+* `RecyclerView` has a class called `DiffUtil` which is for calculating the differences between two lists.
+* `DiffUtil` has a class called `ItemCallBack` that you extend in order to figure out the difference between two lists.
+* In the `ItemCallback` class, you must override the `areItemsTheSame()` and `areContentsTheSame()` methods.
+
+**ListAdapter**:
+
+* To get some list management for free, you can use the `ListAdapter` class instead of `RecyclerView.Adapter`. However, if you use `ListAdapter` you have to write your own adapter for other layouts, which is why this codelab shows you how to do it.
+* To open the intention menu in Android Studio, place the cursor on any item of code and press `Alt+Enter` (`Option+Enter` on a Mac). This menu is particularly helpful for refactoring code and creating stubs for implementing methods. The menu is context-sensitive, so you need to place cursor exactly to get the correct menu.
+
+**Data binding**:
+
+* Use data binding in the item layout to bind data to the views.
+
+**Binding adapters**:
+
+* You previously used `Transformations` to create strings from data. If you need to bind data of different or complex types, provide binding adapters to help data binding use them.
+* To declare a binding adapter, define a method that takes an item and a view, and annotate the method with `@BindingAdapter`. In Kotlin, you can write the binding adapter as an extension function on the `View`. Pass in the name of the property that the adapter adapts. For example:
+
+```xml
+@BindingAdapter("sleepDurationFormatted")
+```
+
+* In the XML layout, set an `app` property with the same name as the binding adapter. Pass in a variable with the data. For example:
+
+```xml
+.app:sleepDurationFormatted="@{sleep}"
+```
+
+#### GridLayout with RecyclerView
+
+* Layout managers manage how the items in the `RecyclerView` are arranged.
+* `RecyclerView` comes with out-of-the-box layout managers for common use cases such as `LinearLayout` for horizontal and vertical lists, and `GridLayout` for grids.
+* For more complicated use cases, implement a custom `LayoutManager`.
+* From a design perspective, `GridLayout` is best used for lists of items that can be represented as icons or images.
+* `GridLayout` arranges items in a grid of rows and columns. Assuming vertical scrolling, each item in a row takes up what's called a "span."
+* You can customize how many spans an item takes up, creating more interesting grids without the need for a custom layout manager.
+* Create an item layout for one item in the grid, and the layout manager takes care of arranging the items.
+* You can set the `LayoutManager` for the `RecyclerView` either in the XML layout file that contains the `<RecyclerView>` element, or programmatically.
+
+#### Interacting with RecyclerView items
+
+To make items in a `RecyclerView` respond to clicks, attach click listeners to list items in the `ViewHolder`, and handle clicks in the `ViewModel`.
+
+To make items in a `RecyclerView` respond to clicks, you need to do the following:
+
+* Create a listener class that takes a lambda and assigns it to an `onClick()` function.
+
+```kotlin
+class SleepNightListener(val clickListener: (sleepId: Long) -> Unit) {
+   fun onClick(night: SleepNight) = clickListener(night.nightId)
+}
+```
+
+* Set the click listener on the view.
+
+```xml
+android:onClick="@{() -> clickListener.onClick(sleep)}"
+```
+
+* Pass the click listener to the adapter constructor, into the view holder, and add it to the binding object.
+
+```kotlin
+class SleepNightAdapter(val clickListener: SleepNightListener):
+       ListAdapter<DataItem, RecyclerView.ViewHolder>(SleepNightDiffCallback()
+```
+
+```kotlin
+holder.bind(getItem(position)!!, clickListener)
+```
+
+```kotlin
+binding.clickListener = clickListener
+```
+
+* In the fragment that shows the recycler view, where you create the adapter, define a click listener by passing a lambda to the adapter.
+
+```kotlin
+val adapter = SleepNightAdapter(SleepNightListener { nightId ->
+      sleepTrackerViewModel.onSleepNightClicked(nightId)
+})
+```
+
+* Implement the click handler in the view model. For clicks on list items, this commonly triggers navigation to a detail fragment.
+
+#### Headers in RecyclerView
+
+* A _header_ is generally an item that spans the width of a list and acts as a title or separator. A list can have a single header to describe the item content, or multiple headers to group items and separate items from each other.
+* A `RecyclerView` can use multiple view holders to accommodate a heterogeneous set of items; for example, headers and list items.
+* One way to add headers is to modify your adapter to use a different `ViewHolder` by checking indexes where your header needs to be shown. The `Adapter` is responsible for keeping track of the header.
+* Another way to add headers is to modify the backing dataset (the list) for your data grid, which is what you did in this codelab.
+
+These are the major steps for adding a header:
+
+* Abstract the data in your list by creating a `DataItem` that can hold a header or data.
+* Create a view holder with a layout for the header in the adapter.
+* Update the adapter and its methods to use any kind of `RecyclerView.ViewHolder`.
+* In `onCreateViewHolder()`, return the correct type of view holder for the data item.
+* Update `SleepNightDiffCallback` to work with the `DataItem` class.
+* Create a `addHeaderAndSubmitList()` function that uses coroutines to add the header to the dataset and then calls `submitList()`.
+* Implement `GridLayoutManager.SpanSizeLookup()` to make only the header three spans wide.

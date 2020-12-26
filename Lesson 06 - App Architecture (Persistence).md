@@ -1343,3 +1343,66 @@ if (it == true) { // Observed state is true.
 // Show a snackbar message, because it's friendly.
 _showSnackbarEvent.value = true
 ```
+
+***
+
+### Summary
+
+#### Create a Room Database
+
+* Define your tables as data classes annotated with `@Entity`. Define properties annotated with `@ColumnInfo` as columns in the tables.
+* Define a data access object (DAO) as an interface annotated with `@Dao`. The DAO maps Kotlin functions to database queries.
+* Use annotations to define `@Insert`, `@Delete`, and `@Update` functions.
+* Use the `@Query` annotation with an SQLite query string as a parameter for any other queries.
+* Create an abstract class that has a `getInstance()` function that returns a database.
+* Use instrumented tests to test that your database and DAO are working as expected. You can use the provided tests as a template.
+
+#### Coroutines and Room
+
+* Use `ViewModel`, `ViewModelFactory`, and data binding to set up the UI architecture for the app.
+* To keep the UI running smoothly, use coroutines for long-running tasks, such as all database operations.
+* Coroutines are asynchronous and non-blocking. They use `suspend` functions to make asynchronous code sequential.
+* When a coroutine calls a function marked with `suspend`, instead of blocking until that function returns like a normal function call, it suspends execution until the result is ready. Then it resumes where it left off with the result.
+* The difference between _blocking_ and _suspending_ is that if a thread is blocked, no other work happens. If the thread is suspended, other work happens until the result is available.
+
+To implement click handlers that trigger database operations, follow this pattern:
+
+1. Launch a coroutine that runs on the main or UI thread, because the result affects the UI.
+2. Call a suspend function to do the long-running work, so that you don't block the UI thread while waiting for the result.
+3. The long-running work has nothing to do with the UI, so switch to the I/O context. That way, the work can run in a thread pool that's optimized and set aside for these kinds of operations.
+4. Then call the long running function to do the work.
+
+Use a `Transformations` map to create a string from a `LiveData` object every time the object changes.
+
+#### Use LiveData to control button states
+
+Implementing sleep quality tracking in this app is like playing a familiar piece of music in a new key. While details change, the underlying pattern of what you did in previous codelabs in this lesson remains the same. Being aware of these patterns makes coding much faster, because you can reuse code from existing apps. Here are some of the patterns used in this course so far:
+
+* Create a `ViewModel` and a `ViewModelFactory` and set up a data source.
+* Trigger navigation. To separate concerns, put the click handler in the view model and the navigation in the fragment.
+* Use encapsulation with `LiveData` to track and respond to state changes.
+* Use transformations with `LiveData`.
+* Create a singleton database.
+* Set up coroutines for database operations.
+
+**Triggering navigation**
+
+You define possible navigation paths between fragments in a navigation file. There are some different ways to trigger navigation from one fragment to the next. These include:
+
+* Define `onClick` handlers to trigger navigation to a destination fragment.
+* Alternatively, to enable navigation from one fragment to the next:
+* Define a `LiveData` value to record if navigation should occur.
+* Attach an observer to that `LiveData` value.
+* Your code then changes that value whenever navigation needs to be triggered or is complete.
+
+**Setting the android:enabled attribute**
+
+* The [`android:enabled`](https://developer.android.com/reference/android/widget/TextView.html#attr_android:enabled) attribute is defined in `TextView` and inherited by all subclasses, including `Button`.
+* The `android:enabled` attribute determines whether or not a `View` is enabled. The meaning of "enabled" varies by subclass. For example, a non-enabled `EditText` prevents the user from editing the contained text, and a non-enabled `Button` prevents the user from tapping the button.
+* The `enabled` attribute is not the same as the `visibility` attribute.
+* You can use transformation maps to set the value of the `enabled` attribute of buttons based on the state of another object or variable.
+
+Other points covered in this codelab:
+
+* To trigger notifications to the user, you can use the same technique as you use to trigger navigation.
+* You can use a [`Snackbar`](https://material.io/develop/android/components/snackbar/) to notify the user.

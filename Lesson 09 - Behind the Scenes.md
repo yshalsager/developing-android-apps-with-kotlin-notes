@@ -528,19 +528,6 @@ If new data came in from the network, the screen would automatically update to s
 
 ***
 
-### Offline Caching Summary
-
-* [Caching](https://searchstorage.techtarget.com/definition/cache) is a process of storing data fetched from a network on a device's storage. Caching lets your app access data when the device is offline, or if your app needs to access the same data again.
-* The best way for your app to store structured data on a device's file system is to use a local SQLite database. `Room` is an SQLite object-mapping library, meaning that it provides an abstraction layer over SQLite. Using `Room` is the recommended best practice for implementing offline caching.
-* A repository class isolates data sources, such as `Room` database and web services, from the rest of the app. The repository class provides a clean API for data access to the rest of the app.
-* Using repositories is a recommended best practice for code separation and architecture.
-* When you design an offline cache, it's a best practice to separate the app's network, domain, and database objects. This strategy is an example of [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
-* To add offline-support to an app, add a local database using `Room`. Implement a repository to manage and access the `Room` database. In the `ViewModel`, fetch and display the data directly from the repository instead of fetching the data from the network.
-* Use a database refresh strategy to insert and update the data in the local database. In a database refresh, the local database is updated or refreshed to keep it in sync with data from the network.
-* To update your app's UI data automatically when the data in the database changes, use observable queries with a return value of type [`LiveData`](https://developer.android.com/reference/androidx/lifecycle/LiveData.html) in the DAO. When the `Room` database is updated, `Room` runs the query in background to update the associated `LiveData`.
-
-***
-
 ### [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) for the background
 
 [`WorkManager`](https://developer.android.com/arch/work) is one of the [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) and part of [Android Jetpack](http://d.android.com/jetpack). `WorkManager` is for background work that's deferrable and requires guaranteed execution:
@@ -1002,7 +989,21 @@ Great Job! You implemented and scheduled a battery-friendly work request for the
 
 ***
 
-### WorkManager Summary
+### Summary
+
+#### Offline Caching
+
+* [Caching](https://searchstorage.techtarget.com/definition/cache) is a process of storing data fetched from a network on a device's storage. Caching lets your app access data when the device is offline, or if your app needs to access the same data again.
+* The best way for your app to store structured data on a device's file system is to use a local SQLite database. `Room` is an SQLite object-mapping library, meaning that it provides an abstraction layer over SQLite. Using `Room` is the recommended best practice for implementing offline caching.
+* A repository class isolates data sources, such as `Room` database and web services, from the rest of the app. The repository class provides a clean API for data access to the rest of the app.
+* Using repositories is a recommended best practice for code separation and architecture.
+* When you design an offline cache, it's a best practice to separate the app's network, domain, and database objects. This strategy is an example of [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
+* To add offline-support to an app, add a local database using `Room`. Implement a repository to manage and access the `Room` database. In the `ViewModel`, fetch and display the data directly from the repository instead of fetching the data from the network.
+* Use a database refresh strategy to insert and update the data in the local database. In a database refresh, the local database is updated or refreshed to keep it in sync with data from the network.
+* To update your app's UI data automatically when the data in the database changes, use observable queries with a return value of type [`LiveData`](https://developer.android.com/reference/androidx/lifecycle/LiveData.html) in the DAO. When the `Room` database is updated, `Room` runs the query in background to update the associated `LiveData`.
+
+
+#### WorkManager
 
 * The [`WorkManager`](https://developer.android.com/topic/libraries/architecture/workmanager.html) API makes it easy to schedule deferrable, asynchronous tasks that must be run reliably.
 * Most real-world apps need to perform long-running background tasks. To schedule a background task in an optimized and efficient way, use `WorkManager`.
